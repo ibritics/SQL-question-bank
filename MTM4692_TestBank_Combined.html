@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MTM4692 — Applied SQL · Complete Test Bank</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper: #FAFAF8;
+    --paper-dark: #F2F1ED;
+    --ink: #1A1A18;
+    --ink-muted: #5A5A55;
+    --ink-faint: #9A9A92;
+    --rule: #E2E0D8;
+    --rule-dark: #CCCAB8;
+    --accent: #2B4D8C;
+    --accent-light: #EEF2FA;
+    --green: #1F6B45;
+    --green-light: #EBF5EE;
+    --green-border: #A8D5B8;
+    --amber: #7A4A0A;
+    --amber-light: #FDF3E3;
+    --red: #8B2020;
+    --red-light: #FCEAEA;
+    --red-border: #E8AAAA;
+    --teal: #1A5C6B;
+    --teal-light: #E8F5F7;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', Helvetica, sans-serif;
+    --font-mono: 'DM Mono', 'Courier New', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--paper-dark);
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule-dark);
+    padding: 56px 0 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent) 0%, #6A8FD4 50%, var(--accent) 100%);
+  }
+
+  .cover-inner { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+
+  .university-tag {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 24px;
+  }
+
+  .cover h1 {
+    font-family: var(--font-display);
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+
+  .cover h1 span { color: var(--accent); }
+
+  .cover-sub {
+    font-size: 16px;
+    color: var(--ink-muted);
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+
+  .cover-meta {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+
+  .meta-item {
+    text-align: center;
+  }
+
+  .meta-num {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+    line-height: 1;
+  }
+
+  .meta-label {
+    font-size: 12px;
+    color: var(--ink-muted);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  .week-pills {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .week-pill {
+    background: var(--paper-dark);
+    border: 1px solid var(--rule-dark);
+    border-radius: 32px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .week-pill:hover {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── LAYOUT ── */
+  .main { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* ── WEEK SECTION ── */
+  .week-section {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+
+  .week-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .week-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .week-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  .week-topic {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-top: 3px;
+  }
+
+  .week-stats {
+    display: flex;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  .wstat {
+    text-align: right;
+  }
+
+  .wstat-n {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    display: block;
+    line-height: 1;
+  }
+
+  .wstat-l {
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+    background: var(--paper-dark);
+  }
+
+  .filter-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-right: 4px;
+  }
+
+  .fbtn {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border: 1px solid var(--rule-dark);
+    border-radius: 20px;
+    background: var(--paper);
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: all 0.18s;
+    letter-spacing: 0.02em;
+  }
+
+  .fbtn:hover { border-color: var(--accent); color: var(--accent); }
+  .fbtn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ── SCORE BAR ── */
+  .score-bar {
+    padding: 12px 28px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    background: var(--paper);
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+
+  .score-item strong {
+    font-size: 15px;
+    color: var(--ink);
+    font-weight: 500;
+    margin-right: 4px;
+  }
+
+  /* ── QUESTIONS CONTAINER ── */
+  .questions-wrap { padding: 20px 28px 28px; }
+
+  /* ── QUESTION CARD ── */
+  .q-card {
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+
+  .q-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+
+  .q-head {
+    padding: 16px 18px 12px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .q-num-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-light);
+    border-radius: 4px;
+    padding: 2px 7px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 3px;
+    letter-spacing: 0.04em;
+  }
+
+  .badge {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 3px;
+    letter-spacing: 0.03em;
+  }
+
+  .badge-exam { background: var(--amber-light); color: var(--amber); border: 1px solid #E8C878; }
+  .badge-extra { background: var(--teal-light); color: var(--teal); }
+  .badge-mc { background: var(--accent-light); color: var(--accent); }
+  .badge-tf { background: var(--green-light); color: var(--green); }
+  .badge-sa { background: var(--amber-light); color: var(--amber); }
+  .badge-code { background: #F0EEFF; color: #4A3AAA; }
+  .badge-tag { background: var(--paper-dark); color: var(--ink-muted); border: 1px solid var(--rule); }
+
+  .q-text {
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  .q-text code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: var(--paper-dark);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: #2B4D8C;
+  }
+
+  /* ── OPTIONS ── */
+  .q-options {
+    padding: 0 18px 14px;
+  }
+
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--paper);
+  }
+
+  .opt:last-child { margin-bottom: 0; }
+  .opt:hover { background: var(--paper-dark); border-color: var(--rule-dark); }
+  .opt.selected { border-color: var(--accent); background: var(--accent-light); }
+  .opt.correct { background: var(--green-light); border-color: var(--green-border); }
+  .opt.wrong { background: var(--red-light); border-color: var(--red-border); }
+  .opt.revealed { background: var(--green-light); border-color: var(--green-border); }
+
+  .opt-key {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    min-width: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .opt.correct .opt-key, .opt.revealed .opt-key { color: var(--green); }
+  .opt.wrong .opt-key { color: var(--red); }
+  .opt.selected .opt-key { color: var(--accent); }
+
+  .opt-text {
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  /* TF */
+  .tf-row { display: flex; gap: 8px; padding: 0 18px 14px; }
+  .tf-btn {
+    flex: 1;
+    padding: 9px;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--paper);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--ink);
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+
+  .tf-btn:hover { background: var(--paper-dark); }
+  .tf-btn.selected { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+  .tf-btn.correct { background: var(--green-light); border-color: var(--green-border); color: var(--green); }
+  .tf-btn.wrong { background: var(--red-light); border-color: var(--red-border); color: var(--red); }
+
+  /* Textarea */
+  .q-textarea-wrap { padding: 0 18px 14px; }
+  .q-textarea {
+    width: 100%;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--paper);
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+    transition: border-color 0.15s;
+    line-height: 1.5;
+  }
+
+  .q-textarea:focus { border-color: var(--accent); }
+
+  /* Correct answer shown always */
+  .q-opts-static { padding: 0 18px 14px; }
+  .static-opt {
+    padding: 7px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: var(--ink-muted);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .static-opt.is-correct {
+    background: var(--green-light);
+    border-color: var(--green-border);
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .tick { color: var(--green); font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── ACTIONS ── */
+  .q-foot {
+    padding: 0 18px 14px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .reveal-btn {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border: 1px solid var(--rule-dark);
+    border-radius: 20px;
+    background: var(--paper);
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+
+  .reveal-btn:hover { background: var(--paper-dark); border-color: var(--accent); color: var(--accent); }
+
+  /* ── ANSWER BOX ── */
+  .answer-box {
+    display: none;
+    margin: 0 18px 16px;
+    padding: 14px 16px;
+    background: var(--paper-dark);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--green);
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+
+  .answer-box.open { display: block; }
+  .answer-box.feedback-correct { border-left-color: var(--green); background: var(--green-light); }
+  .answer-box.feedback-wrong { border-left-color: var(--red); background: var(--red-light); }
+  .answer-box.feedback-info { border-left-color: var(--accent); background: var(--accent-light); }
+
+  .fb-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .fb-label.lbl-correct { color: var(--green); }
+  .fb-label.lbl-wrong { color: var(--red); }
+  .fb-label.lbl-info { color: var(--accent); }
+  .fb-label.lbl-reveal { color: var(--ink-muted); }
+
+  .fb-source {
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-top: 8px;
+    font-style: italic;
+    border-top: 1px solid var(--rule);
+    padding-top: 6px;
+  }
+
+  /* ── WEEK SUBMIT BAR ── */
+  .submit-bar {
+    padding: 16px 28px;
+    border-top: 1px solid var(--rule);
+    background: var(--paper-dark);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-submit {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 9px 24px;
+    border-radius: 6px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.15s;
+  }
+
+  .btn-submit:hover { background: #1E3A70; }
+
+  .btn-reset {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 400;
+    padding: 9px 20px;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--ink-muted);
+    border: 1px solid var(--rule-dark);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-reset:hover { background: var(--paper); }
+
+  .submit-note {
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-left: auto;
+  }
+
+  /* ── SCORE RESULT ── */
+  .score-result {
+    display: none;
+    margin: 16px 28px;
+    padding: 20px 24px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .score-result.show { display: block; }
+  .score-big { font-family: var(--font-display); font-size: 52px; font-weight: 700; color: var(--accent); line-height: 1; }
+  .score-denom { font-size: 18px; color: var(--ink-muted); }
+  .score-caption { font-size: 12px; color: var(--ink-faint); margin-top: 4px; margin-bottom: 16px; }
+  .score-grid { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .sc-box { background: var(--paper-dark); border-radius: 8px; padding: 12px 20px; text-align: center; }
+  .sc-n { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--ink); display: block; }
+  .sc-l { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  /* ── PROGRESS ── */
+  .prog-track {
+    height: 3px;
+    background: var(--rule);
+    overflow: hidden;
+  }
+
+  .prog-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    text-align: center;
+    margin: 40px 0 32px;
+    position: relative;
+  }
+
+  .section-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    height: 1px;
+    background: var(--rule-dark);
+  }
+
+  .section-divider span {
+    position: relative;
+    background: var(--paper-dark);
+    padding: 0 16px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--rule-dark);
+    margin-top: 40px;
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: white; }
+    .cover::before { display: none; }
+    .filter-bar, .submit-bar, .prog-track, .week-pill, .reveal-btn { display: none !important; }
+    .answer-box { display: block !important; }
+    .q-card { break-inside: avoid; }
+    .week-section { border: 1px solid #ccc; break-inside: avoid; }
+  }
+
+  @media (max-width: 600px) {
+    .cover h1 { font-size: 28px; }
+    .week-stats { display: none; }
+    .q-head { flex-wrap: wrap; }
+    .questions-wrap { padding: 16px 16px 20px; }
+    .filter-bar { padding: 12px 16px; }
+    .week-header { padding: 18px 16px; }
+    .submit-bar { padding: 14px 16px; }
+    .score-result { margin: 12px 16px; }
+    .main { padding: 24px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     COVER
+═══════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-inner">
+    <p class="university-tag">Yildiz Technical University · Department of AI & Data Engineering</p>
+    <h1>MTM4692 <span>Applied SQL</span></h1>
+    <p class="cover-sub">Spring 2026 · Complete Question Bank — Weeks 3–6</p>
+
+    <div class="cover-meta">
+      <div class="meta-item">
+        <span class="meta-num">80</span>
+        <div class="meta-label">Questions</div>
+      </div>
+      <div class="meta-item">
+        <span class="meta-num">4</span>
+        <div class="meta-label">Weeks covered</div>
+      </div>
+      <div class="meta-item">
+        <span class="meta-num">26</span>
+        <div class="meta-label">Exam focus Qs</div>
+      </div>
+    </div>
+
+    <div class="week-pills">
+      <a class="week-pill" href="#week3">Week 3 — JOINs & GROUP BY</a>
+      <a class="week-pill" href="#week4">Week 4 — Indexes & Performance</a>
+      <a class="week-pill" href="#week5">Week 5 — Views</a>
+      <a class="week-pill" href="#week6">Week 6 — Relational vs NoSQL</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════ -->
+<div class="main">
+
+<!-- ═══════════════ WEEK 3 ═══════════════ -->
+<div class="week-section" id="week3">
+  <div class="week-header">
+    <div>
+      <div class="week-label">Week 3</div>
+      <div class="week-title">JOINs, GROUP BY, Subqueries & Execution Order</div>
+      <div class="week-topic">Applied SQL · Spring 2026</div>
+    </div>
+    <div class="week-stats">
+      <div class="wstat">
+        <span class="wstat-n" id="w3-total">33</span>
+        <div class="wstat-l">Questions</div>
+      </div>
+      <div class="wstat">
+        <span class="wstat-n" id="w3-correct">0</span>
+        <div class="wstat-l">Correct</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="fbtn active" onclick="w3filter('all',this)">All</button>
+    <button class="fbtn" onclick="w3filter('mc',this)">Multiple choice</button>
+    <button class="fbtn" onclick="w3filter('tf',this)">True / False</button>
+    <button class="fbtn" onclick="w3filter('sa',this)">Short answer</button>
+    <button class="fbtn" onclick="w3filter('code',this)">SQL writing</button>
+  </div>
+
+  <div class="prog-track"><div class="prog-fill" id="w3-prog" style="width:0%"></div></div>
+
+  <div class="questions-wrap" id="w3-list"></div>
+
+  <div class="submit-bar">
+    <button class="btn-submit" onclick="w3submit()">Submit answers</button>
+    <button class="btn-reset" onclick="w3reset()">Reset</button>
+    <span class="submit-note">Short answer &amp; SQL questions are self-graded</span>
+  </div>
+  <div class="score-result" id="w3-score">
+    <div class="score-big" id="w3-snum">0</div>
+    <div class="score-denom" id="w3-sdenom">/ 0</div>
+    <div class="score-caption">auto-graded score (short answer &amp; SQL excluded)</div>
+    <div class="score-grid">
+      <div class="sc-box"><span class="sc-n" id="w3-sc">0</span><div class="sc-l">Correct</div></div>
+      <div class="sc-box"><span class="sc-n" id="w3-sw">0</span><div class="sc-l">Wrong</div></div>
+      <div class="sc-box"><span class="sc-n" id="w3-ss">0</span><div class="sc-l">Self-grade</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ WEEK 4 ═══════════════ -->
+<div class="week-section" id="week4">
+  <div class="week-header">
+    <div>
+      <div class="week-label">Week 4</div>
+      <div class="week-title">SQL Indexes &amp; Performance</div>
+      <div class="week-topic">B-Tree · EXPLAIN · Anti-Patterns · Covering Indexes</div>
+    </div>
+    <div class="week-stats">
+      <div class="wstat">
+        <span class="wstat-n">20</span>
+        <div class="wstat-l">Questions</div>
+      </div>
+      <div class="wstat">
+        <span class="wstat-n" id="w4-correct">0</span>
+        <div class="wstat-l">Correct</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="fbtn active" onclick="w4filter('all',this)">All</button>
+    <button class="fbtn" onclick="w4filter('exam',this)">Exam focus</button>
+    <button class="fbtn" onclick="w4filter('btree',this)">B-Tree</button>
+    <button class="fbtn" onclick="w4filter('create',this)">Creating indexes</button>
+    <button class="fbtn" onclick="w4filter('explain',this)">EXPLAIN</button>
+    <button class="fbtn" onclick="w4filter('antipattern',this)">Anti-patterns</button>
+    <button class="fbtn" onclick="w4filter('perf',this)">Performance</button>
+  </div>
+
+  <div class="prog-track"><div class="prog-fill" id="w4-prog" style="width:0%"></div></div>
+
+  <div class="questions-wrap" id="w4-list"></div>
+
+  <div class="submit-bar">
+    <button class="btn-submit" onclick="w4submit()">Submit answers</button>
+    <button class="btn-reset" onclick="w4reset()">Reset</button>
+  </div>
+  <div class="score-result" id="w4-score">
+    <div class="score-big" id="w4-snum">0</div>
+    <div class="score-denom" id="w4-sdenom">/ 0</div>
+    <div class="score-caption">auto-graded score</div>
+    <div class="score-grid">
+      <div class="sc-box"><span class="sc-n" id="w4-sc">0</span><div class="sc-l">Correct</div></div>
+      <div class="sc-box"><span class="sc-n" id="w4-sw">0</span><div class="sc-l">Wrong</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ WEEK 5 ═══════════════ -->
+<div class="week-section" id="week5">
+  <div class="week-header">
+    <div>
+      <div class="week-label">Week 5</div>
+      <div class="week-title">SQL Views</div>
+      <div class="week-topic">Updatable Views · Security · Materialized Views · WITH CHECK OPTION</div>
+    </div>
+    <div class="week-stats">
+      <div class="wstat">
+        <span class="wstat-n">20</span>
+        <div class="wstat-l">Questions</div>
+      </div>
+      <div class="wstat">
+        <span class="wstat-n" id="w5-correct">0</span>
+        <div class="wstat-l">Correct</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="fbtn active" onclick="w5filter('all',this)">All</button>
+    <button class="fbtn" onclick="w5filter('exam',this)">Exam focus</button>
+    <button class="fbtn" onclick="w5filter('basics',this)">View basics</button>
+    <button class="fbtn" onclick="w5filter('create',this)">Create &amp; manage</button>
+    <button class="fbtn" onclick="w5filter('updatable',this)">Updatable views</button>
+    <button class="fbtn" onclick="w5filter('security',this)">Security</button>
+    <button class="fbtn" onclick="w5filter('perf',this)">Performance</button>
+  </div>
+
+  <div class="prog-track"><div class="prog-fill" id="w5-prog" style="width:0%"></div></div>
+
+  <div class="questions-wrap" id="w5-list"></div>
+
+  <div class="submit-bar">
+    <button class="btn-submit" onclick="w5submit()">Submit answers</button>
+    <button class="btn-reset" onclick="w5reset()">Reset</button>
+  </div>
+  <div class="score-result" id="w5-score">
+    <div class="score-big" id="w5-snum">0</div>
+    <div class="score-denom" id="w5-sdenom">/ 0</div>
+    <div class="score-caption">auto-graded score</div>
+    <div class="score-grid">
+      <div class="sc-box"><span class="sc-n" id="w5-sc">0</span><div class="sc-l">Correct</div></div>
+      <div class="sc-box"><span class="sc-n" id="w5-sw">0</span><div class="sc-l">Wrong</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ WEEK 6 ═══════════════ -->
+<div class="week-section" id="week6">
+  <div class="week-header">
+    <div>
+      <div class="week-label">Week 6</div>
+      <div class="week-title">Relational vs NoSQL Databases</div>
+      <div class="week-topic">ACID · BASE · CAP Theorem · Document · Key-Value · Graph</div>
+    </div>
+    <div class="week-stats">
+      <div class="wstat">
+        <span class="wstat-n">20</span>
+        <div class="wstat-l">Questions</div>
+      </div>
+      <div class="wstat">
+        <span class="wstat-n" id="w6-correct">0</span>
+        <div class="wstat-l">Correct</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="fbtn active" onclick="w6filter('all',this)">All</button>
+    <button class="fbtn" onclick="w6filter('exam',this)">Exam focus</button>
+    <button class="fbtn" onclick="w6filter('acid',this)">ACID / BASE</button>
+    <button class="fbtn" onclick="w6filter('cap',this)">CAP theorem</button>
+    <button class="fbtn" onclick="w6filter('nosql',this)">NoSQL types</button>
+    <button class="fbtn" onclick="w6filter('sql',this)">SQL vs NoSQL</button>
+  </div>
+
+  <div class="prog-track"><div class="prog-fill" id="w6-prog" style="width:0%"></div></div>
+
+  <div class="questions-wrap" id="w6-list"></div>
+
+  <div class="submit-bar">
+    <button class="btn-submit" onclick="w6submit()">Submit answers</button>
+    <button class="btn-reset" onclick="w6reset()">Reset</button>
+  </div>
+  <div class="score-result" id="w6-score">
+    <div class="score-big" id="w6-snum">0</div>
+    <div class="score-denom" id="w6-sdenom">/ 0</div>
+    <div class="score-caption">auto-graded score</div>
+    <div class="score-grid">
+      <div class="sc-box"><span class="sc-n" id="w6-sc">0</span><div class="sc-l">Correct</div></div>
+      <div class="sc-box"><span class="sc-n" id="w6-sw">0</span><div class="sc-l">Wrong</div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<div class="footer">
+  MTM4692 Applied SQL · Spring 2026 · Yildiz Technical University<br>
+  Instructor: Fettah KIRAN · Department of AI and Data Engineering
+</div>
+
+<script>
+/* ════════════════════════════════════
+   DATA — WEEK 3
+════════════════════════════════════ */
+const W3 = [
+  {type:'mc',topic:'JOINs',q:'Which JOIN type returns only rows where there is a matching value in both tables?',opts:['LEFT JOIN','INNER JOIN','FULL OUTER JOIN','CROSS JOIN'],ans:1,fb:'INNER JOIN returns only matching rows. Rows without a match in either table are excluded.'},
+  {type:'mc',topic:'JOINs',q:'Student table has 4 rows and course table has 5 rows. How many rows does a CROSS JOIN produce?',opts:['4','5','9','20'],ans:3,fb:'CROSS JOIN produces the Cartesian product: 4 × 5 = 20 rows.'},
+  {type:'mc',topic:'JOINs',q:'Which pattern is used to find students with NO department assigned?',opts:['INNER JOIN + WHERE dept_id = 0','LEFT JOIN + WHERE d.dept_id IS NULL','FULL OUTER JOIN','CROSS JOIN + HAVING COUNT(*) = 0'],ans:1,fb:'LEFT JOIN returns all left-table rows. Filtering WHERE right.pk IS NULL keeps only rows with no match — the Anti-Join pattern.'},
+  {type:'mc',topic:'JOINs',q:'SQLite does NOT natively support which JOIN type?',opts:['INNER JOIN','LEFT JOIN','CROSS JOIN','RIGHT JOIN'],ans:3,fb:'SQLite does not support RIGHT JOIN. The workaround is to swap the tables and use LEFT JOIN instead.'},
+  {type:'mc',topic:'JOINs',q:'In a Self JOIN on an employee table, why are two aliases needed?',opts:['To rename columns','To treat the same table as two separate logical tables','To improve performance','To bypass the FOREIGN KEY constraint'],ans:1,fb:'The same table appears twice. Two aliases let SQL distinguish which instance is the employee side vs the manager side.'},
+  {type:'mc',topic:'JOINs',q:'Which JOIN returns all rows from both tables, using NULL to fill unmatched columns?',opts:['LEFT JOIN','RIGHT JOIN','INNER JOIN','FULL OUTER JOIN'],ans:3,fb:'FULL OUTER JOIN returns every row from both sides. Unmatched positions are filled with NULL.'},
+  {type:'mc',topic:'GROUP BY',q:'Which aggregate function ignores NULL values when counting?',opts:['COUNT(*)','COUNT(column)','SUM(column)','Both COUNT(column) and SUM(column)'],ans:3,fb:'COUNT(*) counts all rows including NULLs. COUNT(column) and SUM(column) both skip NULLs.'},
+  {type:'mc',topic:'GROUP BY',q:'A SELECT uses GROUP BY dept_id. Which column can also appear in SELECT without an aggregate?',opts:['student_name','gpa','dept_id','email'],ans:2,fb:'Only columns listed in GROUP BY can appear unaggregated in SELECT.'},
+  {type:'mc',topic:'HAVING',q:'What is the key difference between WHERE and HAVING?',opts:['WHERE is faster','WHERE filters rows before grouping; HAVING filters groups after GROUP BY','HAVING can only be used without GROUP BY','WHERE supports aggregate functions; HAVING does not'],ans:1,fb:'WHERE is evaluated before GROUP BY (filters rows). HAVING is evaluated after GROUP BY (filters groups). Only HAVING can reference aggregate functions.'},
+  {type:'mc',topic:'HAVING',q:'Which query correctly filters departments with an average GPA above 3.0?',opts:['SELECT dept_id FROM student WHERE AVG(gpa) > 3.0 GROUP BY dept_id','SELECT dept_id, AVG(gpa) FROM student GROUP BY dept_id HAVING AVG(gpa) > 3.0','SELECT dept_id, AVG(gpa) AS avg FROM student GROUP BY dept_id HAVING avg > 3.0','SELECT dept_id FROM student HAVING AVG(gpa) > 3.0'],ans:1,fb:'Option B is correct. WHERE cannot use aggregates. Aliases in HAVING fail in standard SQL. HAVING without GROUP BY is invalid.'},
+  {type:'mc',topic:'Set Ops',q:'UNION vs UNION ALL — which keeps duplicate rows?',opts:['UNION','UNION ALL','Both keep duplicates','Neither keeps duplicates'],ans:1,fb:'UNION removes duplicates. UNION ALL keeps all rows including duplicates and is faster.'},
+  {type:'mc',topic:'Set Ops',q:'Which set operation returns only rows that appear in BOTH result sets?',opts:['UNION','EXCEPT','INTERSECT','UNION ALL'],ans:2,fb:'INTERSECT returns the common rows. UNION combines; EXCEPT subtracts.'},
+  {type:'mc',topic:'Set Ops',q:'Which set operation does MySQL NOT support (but SQLite does)?',opts:['UNION','UNION ALL','INTERSECT','All of the above'],ans:2,fb:'MySQL does not support INTERSECT or EXCEPT. SQLite supports both.'},
+  {type:'mc',topic:'Subqueries',q:'A subquery in a WHERE clause that returns a single value is called a:',opts:['Correlated subquery','Derived table','Scalar subquery','Exists subquery'],ans:2,fb:'A scalar subquery returns exactly one row and one column — a single value.'},
+  {type:'mc',topic:'Subqueries',q:'What makes a correlated subquery different from a non-correlated one?',opts:['It uses IN instead of EXISTS','It references a column from the outer query','It must appear in the FROM clause','It always returns more than one row'],ans:1,fb:'A correlated subquery references a column from the outer query and is re-evaluated for each outer row.'},
+  {type:'mc',topic:'Subqueries',q:'A subquery used in the FROM clause must always have:',opts:['A WHERE clause','An alias','A HAVING clause','A GROUP BY clause'],ans:1,fb:'Derived tables (subqueries in FROM) must be given an alias. Without one, SQL cannot reference the result set.'},
+  {type:'mc',topic:'Execution',q:'What is the correct SQL logical execution order?',opts:['SELECT → FROM → WHERE → GROUP BY → HAVING → ORDER BY','FROM → JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY','WHERE → FROM → SELECT → GROUP BY → ORDER BY','FROM → SELECT → WHERE → ORDER BY → GROUP BY'],ans:1,fb:'Logical order: FROM → JOIN → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT.'},
+  {type:'mc',topic:'Execution',q:'Why can you use a SELECT alias in ORDER BY but NOT in HAVING?',opts:['ORDER BY runs before SELECT; HAVING runs after','HAVING runs before SELECT; ORDER BY runs after SELECT','Both HAVING and ORDER BY run before SELECT','Aliases are never allowed in ORDER BY'],ans:1,fb:'HAVING is processed at step 5, before SELECT (step 6). ORDER BY is at step 8, after SELECT, so aliases are available there.'},
+  {type:'tf',topic:'JOINs',q:'In SQLite, you can swap tables and use LEFT JOIN as a workaround for RIGHT JOIN.',ans:true,fb:'Correct. Swapping table order and using LEFT JOIN produces the same result as RIGHT JOIN.'},
+  {type:'tf',topic:'JOINs',q:'A CROSS JOIN requires an ON clause to define the join condition.',ans:false,fb:'CROSS JOIN produces the full Cartesian product with no condition. Adding ON effectively makes it INNER JOIN.'},
+  {type:'tf',topic:'GROUP BY',q:'Every column in a SELECT with GROUP BY must either appear in GROUP BY or be inside an aggregate function.',ans:true,fb:'This is the fundamental GROUP BY rule. Violating it is bad practice and causes errors in strict SQL.'},
+  {type:'tf',topic:'GROUP BY',q:'GROUP_CONCAT is a standard SQL aggregate function supported by all major databases.',ans:false,fb:'GROUP_CONCAT is SQLite/MySQL-specific. PostgreSQL uses STRING_AGG; SQL Server uses STRING_AGG or FOR XML PATH.'},
+  {type:'tf',topic:'HAVING',q:'You can use WHERE to filter the result of an aggregate function like AVG().',ans:false,fb:'Aggregate functions cannot be used in WHERE because WHERE runs before GROUP BY. Use HAVING.'},
+  {type:'tf',topic:'Set Ops',q:'UNION ALL is generally faster than UNION because it skips duplicate elimination.',ans:true,fb:'UNION must sort or hash results to remove duplicates. UNION ALL simply concatenates — no extra work.'},
+  {type:'tf',topic:'Subqueries',q:'A correlated subquery runs once for the entire outer query.',ans:false,fb:'A correlated subquery is re-executed for each row of the outer query.'},
+  {type:'tf',topic:'Execution',q:'A SELECT alias defined in the SELECT clause can be referenced in a HAVING clause in standard SQL.',ans:false,fb:'In standard SQL, HAVING is evaluated before SELECT, so the alias does not yet exist.'},
+  {type:'sa',topic:'JOINs',q:'Describe the Anti-Join pattern in SQL. What JOIN type is used, and how is the WHERE clause written to achieve it?',ans:'Use LEFT JOIN between the two tables, then filter with WHERE right_table.primary_key IS NULL. This keeps only rows from the left table that have no match in the right table.',fb:'Model answer: LEFT JOIN + WHERE right_table.pk IS NULL. Use case example: "students with no enrollments".'},
+  {type:'sa',topic:'Execution',q:'Explain why the following query fails in standard SQL:\nSELECT dept_id, AVG(gpa) AS avg_gpa FROM student GROUP BY dept_id HAVING avg_gpa > 3.0;',ans:'HAVING is processed before SELECT in the logical execution order. The alias avg_gpa is created in the SELECT step, which has not yet run when HAVING is evaluated. Fix: HAVING AVG(gpa) > 3.0.',fb:'HAVING is step 5; SELECT is step 6. The alias does not exist yet. Write HAVING AVG(gpa) > 3.0 instead.'},
+  {type:'sa',topic:'Subqueries',q:'What is the difference between a scalar subquery and a derived table? Give one example use case for each.',ans:'A scalar subquery appears in WHERE or SELECT and returns a single value. Example: WHERE gpa > (SELECT AVG(gpa) FROM student). A derived table appears in FROM, returns a multi-row result set, and must have an alias. Example: FROM (SELECT dept_id, AVG(gpa) AS avg_gpa FROM student GROUP BY dept_id) AS dept_stats.',fb:'Scalar: one value in WHERE/SELECT. Derived table: result set in FROM with alias.'},
+  {type:'code',topic:'JOINs',q:'Write a SQL query to list all departments (including those with zero students) along with their student count.\nTables: department(dept_id, dept_name) and student(student_id, dept_id).',ans:'SELECT d.dept_name, COUNT(s.student_id) AS num_students\nFROM department d\nLEFT JOIN student s ON d.dept_id = s.dept_id\nGROUP BY d.dept_id, d.dept_name\nORDER BY num_students DESC;',fb:'LEFT JOIN ensures all departments appear. COUNT(s.student_id) correctly counts 0 for empty departments (not COUNT(*)).'},
+  {type:'code',topic:'GROUP BY',q:'Write a query to find all courses with more than 2 enrolled students.\nTables: enrollment(enrollment_id, student_id, course_id) and course(course_id, course_name).',ans:'SELECT c.course_name, COUNT(*) AS num_students\nFROM enrollment e\nJOIN course c ON e.course_id = c.course_id\nGROUP BY c.course_id, c.course_name\nHAVING COUNT(*) > 2;',fb:'JOIN enrollment to course, GROUP BY course, use HAVING (not WHERE) with COUNT(*) > 2.'},
+  {type:'code',topic:'Subqueries',q:'Write a query to find all students whose GPA is above the overall average GPA.\nTable: student(student_id, first_name, last_name, gpa).',ans:'SELECT first_name, last_name, gpa\nFROM student\nWHERE gpa > (SELECT AVG(gpa) FROM student)\nORDER BY gpa DESC;',fb:'Scalar subquery in WHERE. The inner query runs once and returns a single average value.'},
+  {type:'code',topic:'Set Ops',q:'Write a query using EXCEPT to find dept_id values that have students but NO courses.\nTables: student(student_id, dept_id) and course(course_id, dept_id).',ans:'SELECT dept_id FROM student WHERE dept_id IS NOT NULL\nEXCEPT\nSELECT dept_id FROM course WHERE dept_id IS NOT NULL;',fb:'EXCEPT subtracts the second result from the first. IS NOT NULL guards prevent including unassigned rows.'}
+];
+
+/* ════════════════════════════════════
+   DATA — WEEK 4
+════════════════════════════════════ */
+const W4 = [
+  {tags:['btree','exam'],isExam:true,q:'What is the time complexity of a lookup using a B-Tree index on a table with 1,000,000 rows?',opts:['O(n) — linear','O(log n) — logarithmic','O(n²) — quadratic','O(1) — constant'],ans:1,fb:'B-Tree indexes provide O(log n) lookup. For 1 million rows ≈ 20 comparisons instead of 1,000,000.',source:'Week04_Indexes_Performance.pdf — B-Tree Index Structure, slide 8'},
+  {tags:['btree'],isExam:false,q:'Which property of a B-Tree ensures lookup time stays consistently fast regardless of which value is searched?',opts:['It is sorted alphabetically','All leaf nodes are at the same depth (balanced)','It stores values in insertion order','It uses hash buckets for each level'],ans:1,fb:'A B-Tree is balanced — all leaf nodes are at the same depth, guaranteeing consistent O(log n) performance.',source:'Week04_Indexes_Performance.pdf — B-Tree Index Structure, slide 8'},
+  {tags:['exam','antipattern'],isExam:true,q:'Which WHERE clause will PREVENT an index on <code>last_name</code> from being used?',opts:["WHERE last_name = 'Smith'",'WHERE last_name LIKE \'Smi%\'','WHERE last_name LIKE \'%ith\'','WHERE last_name > \'S\''],ans:2,fb:'A leading wildcard (LIKE \'%ith\') forces a full table scan — the index cannot skip ahead when the pattern starts with a wildcard.',source:'Week04_Indexes_Performance.pdf — Exam Focus: Index Anti-Patterns, slide 24'},
+  {tags:['exam','antipattern'],isExam:true,q:'A developer writes: <code>SELECT * FROM student WHERE YEAR(created_at) = 2024</code>. Why is this slow even if <code>created_at</code> is indexed?',opts:['The YEAR() function has a bug','Applying a function to an indexed column prevents the index from being used','SELECT * causes a full table scan always','YEAR() requires a special temporal index'],ans:1,fb:'Wrapping an indexed column in a function breaks index usage. Fix: WHERE created_at >= \'2024-01-01\' AND created_at < \'2025-01-01\'.',source:'Week04_Indexes_Performance.pdf — Exam Focus: Functions on Indexed Columns, slide 25'},
+  {tags:['exam','create'],isExam:true,q:'Which statement about composite indexes is TRUE?',opts:['Column order does not matter','The leftmost columns are used first by the query optimizer','Composite indexes are slower than single-column indexes','SQLite does not support composite indexes'],ans:1,fb:'Leftmost-prefix rule: the optimizer uses composite index columns left to right. INDEX(dept_id, gpa) helps filter on dept_id alone, but NOT gpa alone.',source:'Week04_Indexes_Performance.pdf — Composite Indexes, slides 16–17'},
+  {tags:['explain','exam'],isExam:true,q:'What does the keyword SCAN in SQLite\'s EXPLAIN QUERY PLAN output indicate?',opts:['The query used a covering index','The query used a B-Tree lookup','A full table scan — every row is read','The query was cached'],ans:2,fb:'SCAN = full table scan: SQLite reads every row. It is equivalent to ALL in MySQL EXPLAIN. Eliminate it by adding an appropriate index.',source:'Week04_Indexes_Performance.pdf — EXPLAIN QUERY PLAN in SQLite, slide 19'},
+  {tags:['explain'],isExam:false,q:'After adding an index on <code>last_name</code>, what keyword appears in EXPLAIN QUERY PLAN output to confirm the index is being used?',opts:['SCAN','FULL SCAN','SEARCH USING INDEX','INDEX HIT'],ans:2,fb:'SEARCH USING INDEX confirms SQLite is using the index rather than scanning the entire table.',source:'Week04_Indexes_Performance.pdf — EXPLAIN QUERY PLAN in SQLite, slide 19'},
+  {tags:['explain'],isExam:false,q:'What does USING COVERING INDEX mean in EXPLAIN QUERY PLAN?',opts:['The table has too many indexes','All data needed by the query is in the index — no separate table lookup needed','The index covers only some rows','The index is being rebuilt'],ans:1,fb:'A covering index contains every column the query needs. SQLite can satisfy it entirely from the index — no table lookup step needed.',source:'Week04_Indexes_Performance.pdf — Covering Indexes, slide 22'},
+  {tags:['create'],isExam:false,q:'Which SQL statement creates an index only on rows where <code>is_active = 1</code>?',opts:['CREATE INDEX idx ON student(last_name) HAVING is_active=1','CREATE PARTIAL INDEX idx ON student(last_name)','CREATE INDEX idx ON student(last_name) WHERE is_active=1','CREATE FILTERED INDEX idx ON student(last_name) FOR is_active=1'],ans:2,fb:'A partial index uses a WHERE clause to restrict which rows are indexed — smaller and faster.',source:'Week04_Indexes_Performance.pdf — Types of Indexes in SQLite, slide 12'},
+  {tags:['create'],isExam:false,q:'You frequently query: <code>SELECT first_name, gpa FROM student WHERE dept_id = 1</code>. Which index makes this FASTEST?',opts:['CREATE INDEX ON student(dept_id)','CREATE INDEX ON student(first_name, gpa)','CREATE INDEX ON student(dept_id, first_name, gpa)','CREATE INDEX ON student(gpa, dept_id)'],ans:2,fb:'A covering index on (dept_id, first_name, gpa) allows the query to be answered entirely from the index — no table lookup needed.',source:'Week04_Indexes_Performance.pdf — Covering Indexes, slide 22'},
+  {tags:['create'],isExam:false,q:'In SQLite, which column type is AUTOMATICALLY indexed without any CREATE INDEX statement?',opts:['Any column declared UNIQUE','Any TEXT column','INTEGER PRIMARY KEY','Any column used in a WHERE clause'],ans:2,fb:'In SQLite, INTEGER PRIMARY KEY is the rowid — it is always indexed automatically.',source:'Week04_Indexes_Performance.pdf — Types of Indexes in SQLite, slide 12'},
+  {tags:['antipattern'],isExam:false,q:'You have an index on <code>email</code>. Which query will STILL use the index?',opts:["WHERE UPPER(email) = 'ALICE@YTU.EDU.TR'",'WHERE email = \'alice@ytu.edu.tr\'','WHERE LOWER(email) = \'alice@ytu.edu.tr\'','WHERE SUBSTR(email,1,5) = \'alice\''],ans:1,fb:'Only a plain equality comparison uses the index directly. Function wrappers like UPPER(), LOWER(), SUBSTR() break index usage.',source:'Week04_Indexes_Performance.pdf — Index Anti-Patterns, slide 23'},
+  {tags:['perf'],isExam:false,q:'What is the trade-off introduced by adding indexes to a table?',opts:['Indexes only affect SELECT performance','Read speed increases, but write speed decreases and storage increases','Indexes make writes faster and reads slower','Indexes have no storage cost'],ans:1,fb:'Every index is updated on every INSERT, UPDATE, DELETE — slowing writes. The benefit is faster reads.',source:'Week04_Indexes_Performance.pdf — What Is an Index?, slide 7'},
+  {tags:['perf'],isExam:false,q:'What is the performance complexity for a JOIN without any index on the join column?',opts:['O(log n)','O(n + m)','O(n × m) — nested loop','O(n log n)'],ans:2,fb:'Without an index the database does a nested-loop: for each row in A, scan every row in B → O(n × m). With an index: O(n log m).',source:'Week04_Indexes_Performance.pdf — Index Performance Summary, slide 27'},
+  {tags:['perf'],isExam:false,q:'Which scenario is the BEST candidate for skipping an index?',opts:['A column used in every WHERE clause','A foreign key column used in JOINs','A boolean column with only TRUE/FALSE values','An email column with unique values per row'],ans:2,fb:'Low-cardinality columns (booleans, gender) make poor index candidates — the index may cover more than half the table.',source:'Week04_Indexes_Performance.pdf — When to Index (and When Not To), slide 26'},
+  {tags:['create','antipattern'],isExam:false,q:'Given <code>CREATE INDEX idx ON student(dept_id, gpa)</code>, which query will NOT use this index?',opts:['WHERE dept_id = 1','WHERE dept_id = 1 AND gpa >= 3.5','WHERE gpa >= 3.5','WHERE dept_id = 1 ORDER BY gpa DESC'],ans:2,fb:'Skipping the leftmost column breaks the index. WHERE gpa >= 3.5 alone falls back to a full table scan.',source:'Week04_Indexes_Performance.pdf — Composite Indexes — Column Order Matters!, slide 16'},
+  {tags:['explain'],isExam:false,q:'What SQLite command collects statistics to help the query optimizer make better decisions?',opts:['VACUUM','REINDEX','ANALYZE','PRAGMA optimize'],ans:2,fb:'ANALYZE collects statistics about table data and index distribution (stored in sqlite_stat1) for the optimizer.',source:'Week04_Indexes_Performance.pdf — Practice: ANALYZE Command, slide 40'},
+  {tags:['btree'],isExam:false,q:'For a B-Tree index on 1,000,000 rows, approximately how many levels deep is the tree?',opts:['~3–4 levels','~100 levels','~1,000 levels','~20,000 levels'],ans:0,fb:'Due to the high branching factor, B-Trees covering millions of rows stay only 3–4 levels deep — hence ~20 comparisons.',source:'Week04_Indexes_Performance.pdf — B-Tree Index Structure, slide 8'},
+  {tags:['perf','antipattern'],isExam:false,q:'A table receives thousands of INSERT and UPDATE operations per second. What is the recommended indexing strategy?',opts:['Create as many indexes as possible','Use fewer indexes — only index what is truly necessary for critical queries','Never index write-heavy tables','Use only covering indexes on write-heavy tables'],ans:1,fb:'Every index must be updated on every write. For write-heavy tables, index only the columns needed for critical reads.',source:'Week04_Indexes_Performance.pdf — When to Index (and When Not To), slide 26'},
+  {tags:['create'],isExam:false,q:'You want to allow case-insensitive email lookups: <code>WHERE LOWER(email) = ?</code>. What is the correct approach?',opts:['CREATE INDEX idx ON student(email) — it will handle case automatically','You cannot index case-insensitive searches in SQLite','CREATE INDEX idx ON student(LOWER(email)) — an expression index','Disable the index and use a full scan'],ans:2,fb:'An expression index stores the computed result of LOWER(email). The query WHERE LOWER(email) = \'...\' will then use the index.',source:'Week04_Indexes_Performance.pdf — Expression Indexes, slide 12 & 35'}
+];
+
+/* ════════════════════════════════════
+   DATA — WEEK 5
+════════════════════════════════════ */
+const W5 = [
+  {tags:['basics','exam'],isExam:true,q:'Which of the following is TRUE about views?',opts:['Views store data in the database like tables','Views execute their underlying query each time they are accessed','Views cannot be used in JOIN operations','Views are faster than tables because they cache data'],ans:1,fb:'A view is a saved SELECT query — it stores no data. Every access re-executes the underlying SELECT against the base tables.',source:'Week05_Views.pdf — Exam Focus: Views, slide 13'},
+  {tags:['basics','exam'],isExam:true,q:'Which is a valid benefit of using views?',opts:['Views automatically improve query performance','Views can replace all tables in a database','Views can restrict user access to specific columns of a table','Views always store computed results for faster access'],ans:2,fb:'Views are an excellent security tool: expose only selected columns by granting access to the view instead of the base table — column-level access control.',source:'Week05_Views.pdf — Exam Focus: Views, slide 13 & slide 31'},
+  {tags:['basics'],isExam:false,q:'What is a view in SQL?',opts:['A copy of a table stored in memory','A named SELECT query stored in the database that acts as a virtual table','A special index that speeds up complex queries','A temporary table deleted after the session ends'],ans:1,fb:'A view is a named SELECT query — a virtual table. It stores no data; the underlying query is re-run each time.',source:'Week05_Views.pdf — Views: Virtual Tables, slide 7'},
+  {tags:['basics'],isExam:false,q:'How does a view differ from a regular table in terms of storage?',opts:['A view uses more disk space than a table','A view stores only a compressed version of the data','A view stores only the query definition, not the data','A view stores data in a separate schema'],ans:2,fb:'A view stores only the query definition. Actual data lives in the base tables.',source:'Week05_Views.pdf — Views vs Tables, slide 8'},
+  {tags:['create','exam'],isExam:true,q:'How do you change the definition of an existing view in SQLite?',opts:['ALTER VIEW view_name AS SELECT ...','MODIFY VIEW view_name AS SELECT ...','Drop the view and recreate it with the new definition','UPDATE sqlite_master SET sql = ...'],ans:2,fb:'SQLite does not support ALTER VIEW. The only way is DROP VIEW then CREATE VIEW with the new definition.',source:'Week05_Views.pdf — Exam Focus: CREATE VIEW, slide 19 & Managing Views, slide 17'},
+  {tags:['create'],isExam:false,q:'Which SQL statement correctly lists all views in a SQLite database?',opts:['SHOW VIEWS;',"SELECT name FROM sqlite_master WHERE type = 'view';",'SELECT * FROM information_schema.views;','.listviews'],ans:1,fb:'All SQLite objects are stored in sqlite_master. Filter by type = \'view\' to list all views.',source:'Week05_Views.pdf — Managing Views, slide 17'},
+  {tags:['create'],isExam:false,q:'A view is created with <code>WHERE gpa >= 3.5</code>. A student with gpa = 2.8 is added to the base table. What does querying the view show?',opts:['The new student appears because the view auto-refreshes','The new student does not appear — the WHERE filter excludes them','An error is raised','The view must be dropped and recreated'],ans:1,fb:'Views are always live — they re-execute their query. gpa 2.8 fails the WHERE gpa >= 3.5 filter.',source:'Week05_Views.pdf — Views: Virtual Tables, slide 7'},
+  {tags:['create'],isExam:false,q:'What risk should you be aware of when creating nested views (a view built on another view)?',opts:['Nested views are forbidden in SQLite','They can be hard to debug and may have performance implications','The inner view is deleted when the outer view is created','They always cause infinite loops'],ans:1,fb:'Deep nesting makes debugging hard and can degrade performance significantly. Best practice: limit to 2 levels.',source:'Week05_Views.pdf — Views on Views (Nested Views), slide 18 & slide 38'},
+  {tags:['updatable','exam'],isExam:true,q:'What does WITH CHECK OPTION do for a view?',opts:['Improves query performance','Prevents INSERT/UPDATE operations that would create rows not visible through the view','Adds a CHECK constraint to the underlying table','Enables the view to be updated'],ans:1,fb:'WITH CHECK OPTION enforces that any INSERT or UPDATE through the view must satisfy the view\'s WHERE condition.',source:'Week05_Views.pdf — Exam Focus: WITH CHECK OPTION, slide 25'},
+  {tags:['updatable','exam'],isExam:true,q:'What happens if you INSERT a row through a view (without WITH CHECK OPTION) that doesn\'t match the view\'s WHERE clause?',opts:['The INSERT fails with an error','The row is inserted into the table but not visible through the view','The row is inserted and visible through the view','The view is automatically updated to include the row'],ans:1,fb:'Without WITH CHECK OPTION, the INSERT succeeds and the row is written to the base table — but invisible through the view.',source:'Week05_Views.pdf — Exam Focus: WITH CHECK OPTION, slide 26'},
+  {tags:['updatable'],isExam:false,q:'Which of the following views is updatable in SQLite without triggers?',opts:['A view with GROUP BY and AVG()','A view joining two tables','A view using DISTINCT','A view selecting columns from a single table with no aggregation'],ans:3,fb:'For a view to be updatable: exactly one table, no aggregations, DISTINCT, GROUP BY, HAVING, subqueries in SELECT, or set operations.',source:'Week05_Views.pdf — Can You INSERT/UPDATE/DELETE Through a View?, slide 21'},
+  {tags:['updatable'],isExam:false,q:'A view uses <code>GROUP BY dept_id</code> with <code>AVG(gpa)</code>. Can you INSERT through this view?',opts:['Yes, because it references only one table','Yes, if you use WITH CHECK OPTION','No, because it uses aggregate functions and GROUP BY','No, because it has an alias'],ans:2,fb:'Aggregate functions and GROUP BY make a view non-updatable. The result rows don\'t correspond 1-to-1 with base rows.',source:'Week05_Views.pdf — Non-Updatable Views, slide 23'},
+  {tags:['updatable'],isExam:false,q:'What is the purpose of an INSTEAD OF trigger on a view in SQLite?',opts:['To speed up SELECT queries on the view','To make the view read-only','To intercept INSERT/UPDATE/DELETE on the view and redirect them to the base tables','To automatically refresh a materialized view'],ans:2,fb:'INSTEAD OF triggers fire in place of the DML operation on the view, letting you define what happens to the base tables.',source:'Week05_Views.pdf — INSTEAD OF Triggers, slide 27'},
+  {tags:['updatable'],isExam:false,q:'SQLite\'s support note states that even simple updatable views still require what to perform DML?',opts:['WITH CHECK OPTION','A covering index on the base table','INSTEAD OF triggers','ALTER VIEW ... ENABLE UPDATE'],ans:2,fb:'In SQLite, even technically updatable views require INSTEAD OF triggers in practice for INSERT/UPDATE/DELETE to work reliably.',source:'Week05_Views.pdf — Updatable View Example, slide 22'},
+  {tags:['security'],isExam:false,q:'A company wants general users to see employee names and departments but NOT salaries or SSNs. Best approach?',opts:['Delete the salary and SSN columns','Create a view that selects only the safe columns and grant access to the view','Encrypt the salary column','Add WHERE clause to every SELECT in the application'],ans:1,fb:'Column-level security with views is the standard approach: create a view exposing only safe columns, grant SELECT on the view only.',source:'Week05_Views.pdf — Views for Security: Column-Level, slide 31'},
+  {tags:['security'],isExam:false,q:'A view is: <code>SELECT * FROM orders WHERE order_date >= date(\'now\', \'-30 days\')</code>. What type of security does this implement?',opts:['Column-level security','Row-level security','Schema-level security','Trigger-based security'],ans:1,fb:'Row-level security: the view acts as a permanent WHERE filter, hiding entire rows outside the last 30 days.',source:'Week05_Views.pdf — Views for Security: Row-Level, slide 32'},
+  {tags:['perf','exam'],isExam:true,q:'What is the main difference between a regular view and a materialized view?',opts:['A regular view is faster than a materialized view','A materialized view stores the query result while a regular view re-executes the query each time','Regular views support WITH CHECK OPTION but materialized views don\'t','Materialized views are always up-to-date'],ans:1,fb:'Regular view: stores query definition, re-executes on every access — always current but potentially slow. Materialized view: stores the actual result set — fast reads but must be manually refreshed.',source:'Week05_Views.pdf — Exam Focus: Materialized Views, slide 37'},
+  {tags:['perf'],isExam:false,q:'Does SQLite natively support materialized views?',opts:['Yes, with CREATE MATERIALIZED VIEW syntax','Yes, but only for single-table views','No, but you can simulate one by creating a regular table from a SELECT and refreshing manually','No, and there is no workaround'],ans:2,fb:'SQLite has no CREATE MATERIALIZED VIEW. Workaround: CREATE TABLE mv_name AS SELECT ... then refresh by DROP + CREATE when data changes.',source:'Week05_Views.pdf — Materialized Views (Concept), slides 35–36'},
+  {tags:['perf'],isExam:false,q:'A view wraps a complex JOIN and GROUP BY query. It is accessed 100 times per hour. What is a concern?',opts:['The view definition will be corrupted','The complex query re-executes all 100 times, which may impact performance','Views cannot contain GROUP BY','The view will lock the table for each access'],ans:1,fb:'Every access re-runs the full underlying query. A heavy JOIN + aggregation running 100×/hour can be a significant performance burden.',source:'Week05_Views.pdf — View Performance Considerations, slides 33–34'},
+  {tags:['basics','create'],isExam:false,q:'In the DB 3-level architecture, views belong to which layer?',opts:['Physical layer (internal)','Logical layer (conceptual)','View layer (external)','Application layer'],ans:2,fb:'Views belong to the external (view) layer — the highest abstraction level. The logical layer holds tables; the physical layer handles storage.',source:'Week05_Views.pdf — DB 3-Level Architecture, slide 5'}
+];
+
+/* ════════════════════════════════════
+   DATA — WEEK 6
+════════════════════════════════════ */
+const W6 = [
+  {type:'exam',tags:['acid'],q:'Which ACID property ensures that a transaction is either fully completed or fully rolled back?',opts:['A) Consistency','B) Atomicity','C) Isolation','D) Durability'],ans:1,explanation:'Atomicity ("all or nothing") guarantees that every operation in a transaction succeeds together or the entire transaction is rolled back — no partial updates.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 14 (Exam Focus: ACID)'},
+  {type:'exam',tags:['acid'],q:'Which ACID property guarantees that once a transaction is committed, it will survive system failures?',opts:['A) Atomicity','B) Consistency','C) Isolation','D) Durability'],ans:3,explanation:'Durability means committed data is written to disk via Write-Ahead Logging. Even if the server crashes after COMMIT, data is there after restart.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 15 (Exam Focus: ACID)'},
+  {type:'exam',tags:['acid'],q:'What does BASE stand for in the context of NoSQL databases?',opts:['A) Binary Access Storage Engine','B) Basically Available, Soft state, Eventual consistency','C) Basic Availability Standard Extension','D) Batch Access System Environment'],ans:1,explanation:'BASE is the NoSQL alternative to ACID. Basically Available = system always responds; Soft state = replication lag; Eventual consistency = all replicas eventually agree.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 20 (Exam Focus: BASE)'},
+  {type:'exam',tags:['acid'],q:'Which statement about BASE is TRUE?',opts:['A) BASE guarantees immediate consistency like ACID','B) BASE systems prioritize availability over strict consistency','C) BASE is only used in relational databases','D) BASE means the database is not reliable'],ans:1,explanation:'BASE trades strong consistency for high availability. Cassandra and DynamoDB always respond, but data may be slightly stale.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 20 (Exam Focus: BASE)'},
+  {type:'exam',tags:['cap'],q:'According to the CAP theorem, a distributed database can guarantee at most how many of the three properties?',opts:['A) All three simultaneously','B) Two out of three','C) Only one at a time','D) None — it is a theoretical limit only'],ans:1,explanation:'Brewer\'s CAP theorem (2000): a distributed system can only guarantee two of Consistency, Availability, Partition Tolerance. Real systems choose CP or AP.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 31 (Exam Focus: CAP Theorem)'},
+  {type:'exam',tags:['cap'],q:'A system that prioritises Availability and Partition Tolerance (AP) will sacrifice:',opts:['A) Performance','B) Strong consistency','C) Data storage','D) Security'],ans:1,explanation:'AP systems (Cassandra, DynamoDB, CouchDB) always respond and survive network splits, but may temporarily return stale data.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 31 (Exam Focus: CAP Theorem)'},
+  {type:'exam',tags:['sql'],q:'When would you choose a relational database over NoSQL?',opts:['A) When you need horizontal scaling across 100 servers','B) When data has no fixed schema','C) When data integrity and complex JOINs are critical','D) When write throughput exceeds 1 million ops/sec'],ans:2,explanation:'Relational databases excel when data is structured, relationships are important, and ACID compliance is required — e.g., banking, healthcare, university systems.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 41 (Exam Focus: SQL vs NoSQL)'},
+  {type:'exam',tags:['sql'],q:'What is "polyglot persistence"?',opts:['A) Using only one database for all data','B) Using different database types for different data needs within one system','C) Translating SQL queries to multiple languages','D) A backup strategy using multiple servers'],ans:1,explanation:'Polyglot persistence = choosing the right database for each job: PostgreSQL for orders, MongoDB for catalogs, Redis for caching, Neo4j for recommendations.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 42 (Exam Focus: Polyglot Persistence)'},
+  {type:'extra',tags:['acid'],q:'In SQLite, if a server crashes between two UPDATE statements inside a transaction, what happens?',opts:['A) The first UPDATE is saved, the second is lost','B) Both UPDATEs are rolled back due to atomicity','C) Both UPDATEs are saved due to durability','D) The database becomes corrupted'],ans:1,explanation:'Atomicity ensures "all or nothing." The Write-Ahead Log (WAL) is used on restart to roll back both updates.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 9 (ACID — Atomicity)'},
+  {type:'extra',tags:['acid'],q:'Which isolation level provides the strongest guarantee against concurrent interference, but is also the slowest?',opts:['A) Read Uncommitted','B) Read Committed','C) Repeatable Read','D) Serializable'],ans:3,explanation:'SERIALIZABLE is the strictest level — transactions execute as if sequential, eliminating all concurrency anomalies at the cost of performance.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 12 (Isolation levels)'},
+  {type:'extra',tags:['acid'],q:'A CHECK constraint rejects a withdrawal because the balance would go negative. Which ACID property is being enforced?',opts:['A) Atomicity','B) Consistency','C) Isolation','D) Durability'],ans:1,explanation:'Consistency ensures data moves from one valid state to another. Constraints (PK, FK, CHECK, UNIQUE, NOT NULL) are the enforcement mechanism.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 10 (ACID — Consistency)'},
+  {type:'extra',tags:['nosql'],q:'Which NoSQL type is best suited for storing and querying highly connected data like a social network?',opts:['A) Key-Value store (Redis)','B) Column-family store (Cassandra)','C) Document store (MongoDB)','D) Graph database (Neo4j)'],ans:3,explanation:'Graph databases store data as nodes and edges, making relationship traversal extremely efficient — "friends of friends", fraud patterns, recommendations.',source:'Week06_Relational_vs_NoSQL.pdf — Slides 26–27 (Graph Databases)'},
+  {type:'extra',tags:['nosql'],q:'A web application needs to store user session tokens for fast retrieval. Which database type is the best fit?',opts:['A) Relational (PostgreSQL)','B) Key-Value store (Redis)','C) Graph database (Neo4j)','D) Column-family store (Cassandra)'],ans:1,explanation:'Key-Value stores like Redis keep data in memory, providing sub-millisecond lookup by key — ideal for caching, sessions, counters.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 24 (Key-Value Stores)'},
+  {type:'extra',tags:['nosql'],q:'IoT sensors generate millions of time-stamped readings per day. Which NoSQL type is most appropriate?',opts:['A) Document store','B) Graph database','C) Key-Value store','D) Column-family store (Cassandra)'],ans:3,explanation:'Column-family stores like Cassandra are optimised for write-heavy, time-series workloads with efficient range scans over time windows.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 25 (Column-Family Stores)'},
+  {type:'extra',tags:['nosql'],q:'In a document database like MongoDB, how are related data items typically handled instead of JOINs?',opts:['A) Foreign key references between collections','B) Embedding related data inside the same document','C) A separate join table is created','D) A middleware service performs the join'],ans:1,explanation:'Document databases embed related data (arrays, nested objects) directly in the document — a single read retrieves everything without cross-collection joins.',source:'Week06_Relational_vs_NoSQL.pdf — Slides 22–23 (Document Databases)'},
+  {type:'extra',tags:['cap'],q:'A banking app must never show an incorrect balance; "service unavailable" is acceptable during a partition. Which CAP choice is this?',opts:['A) CA — Consistent and Available','B) AP — Available and Partition Tolerant','C) CP — Consistent and Partition Tolerant','D) All three — CAP theorem does not apply to banking'],ans:2,explanation:'CP systems sacrifice availability during a partition to ensure every read returns the most recent correct write — an incorrect balance is worse than an outage.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 30 (CAP — Practical Choices)'},
+  {type:'extra',tags:['sql'],q:'What SQLite function would you use to read a specific field from a JSON column?',opts:['A) json_get()','B) json_extract()','C) json_field()','D) json_query()'],ans:1,explanation:'json_extract(column, \'$.field\') reads a specific value from a JSON text column — e.g. json_extract(specs, \'$.brand\').',source:'Week06_Relational_vs_NoSQL.pdf — Slide 44 (SQLite JSON Support)'},
+  {type:'extra',tags:['sql'],q:'Which of the following is a key difference between vertical scaling (SQL) and horizontal scaling (NoSQL)?',opts:['A) Vertical scaling adds more servers; horizontal adds more RAM to one server','B) Vertical scaling upgrades one server; horizontal scaling adds more servers','C) Vertical scaling is used only for NoSQL; horizontal for relational','D) There is no meaningful difference'],ans:1,explanation:'Relational databases scale vertically (bigger hardware). NoSQL is designed to scale horizontally — distributing data across many commodity servers (sharding).',source:'Week06_Relational_vs_NoSQL.pdf — Slide 34 (SQL vs NoSQL Comparison)'},
+  {type:'extra',tags:['sql'],q:'Which of the following is NOT a valid reason to choose NoSQL over SQL?',opts:['A) The schema changes frequently','B) You need strong ACID compliance for financial transactions','C) You need to handle millions of writes per second','D) Your data is unstructured JSON or logs'],ans:1,explanation:'Strong ACID compliance is a reason to choose SQL, not NoSQL. NoSQL systems use BASE semantics, unsuitable for financial transaction integrity.',source:'Week06_Relational_vs_NoSQL.pdf — Slides 35–38 (When to Use SQL / NoSQL)'},
+  {type:'extra',tags:['acid','nosql'],q:'An e-commerce platform uses PostgreSQL for orders, MongoDB for catalogs, Redis for carts, Neo4j for recommendations. What term describes this?',opts:['A) Database federation','B) Microservices','C) Polyglot persistence','D) Distributed SQL'],ans:2,explanation:'Polyglot persistence = using the best-fit database technology for each distinct data need. Each store is chosen for its strengths.',source:'Week06_Relational_vs_NoSQL.pdf — Slide 39 (Polyglot Persistence)'}
+];
+
+/* ════════════════════════════════════
+   GENERIC RENDERER + QUIZ ENGINE
+════════════════════════════════════ */
+
+function makeWeek3Engine() {
+  let answered = {}, submitted = false, filter = 'all';
+
+  function getFiltered() {
+    if (filter === 'all') return W3;
+    return W3.filter(q => q.type === filter);
+  }
+
+  function render() {
+    const data = getFiltered();
+    document.getElementById('w3-total').textContent = data.length;
+    const list = document.getElementById('w3-list');
+    list.innerHTML = data.map((q, i) => buildW3Card(q, i)).join('');
+    updateProg();
+  }
+
+  function buildW3Card(q, i) {
+    const typeBadge = {mc:'badge-mc',tf:'badge-tf',sa:'badge-sa',code:'badge-code'}[q.type];
+    const typeLabel = {mc:'Multiple choice',tf:'True / False',sa:'Short answer',code:'SQL writing'}[q.type];
+    let body = '';
+    if (q.type === 'mc') {
+      body = `<div class="q-options">${q.opts.map((o,j)=>`<div class="opt" id="w3o-${i}-${j}" onclick="w3select(${i},${j})"><span class="opt-key">${String.fromCharCode(65+j)}</span><span class="opt-text">${o}</span></div>`).join('')}</div>`;
+    } else if (q.type === 'tf') {
+      body = `<div class="tf-row"><button class="tf-btn" id="w3tf-${i}-t" onclick="w3tf(${i},true)">True</button><button class="tf-btn" id="w3tf-${i}-f" onclick="w3tf(${i},false)">False</button></div>`;
+    } else {
+      body = `<div class="q-textarea-wrap"><textarea class="q-textarea" id="w3ta-${i}" placeholder="Write your answer here…" oninput="w3sa(${i})"></textarea></div>`;
+    }
+    return `<div class="q-card"><div class="q-head"><span class="q-num-badge">Q${i+1}</span><span class="badge ${typeBadge}">${typeLabel}</span><span class="badge badge-tag">${q.topic}</span><span class="q-text">${q.q.replace(/\n/g,'<br>')}</span></div>${body}<div class="q-foot"><button class="reveal-btn" onclick="w3reveal(${i})">Show answer</button></div><div class="answer-box" id="w3ans-${i}"><div class="fb-label lbl-reveal">Model answer / explanation</div><p>${q.fb}</p></div></div>`;
+  }
+
+  function updateProg() {
+    const data = getFiltered();
+    const pct = data.length ? (Object.keys(answered).length / data.length * 100) : 0;
+    document.getElementById('w3-prog').style.width = Math.min(pct,100) + '%';
+  }
+
+  window.w3filter = function(f, btn) {
+    filter = f; answered = {}; submitted = false;
+    document.querySelectorAll('#week3 .fbtn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('w3-score').classList.remove('show');
+    render();
+  };
+
+  window.w3select = function(i, j) {
+    const data = getFiltered();
+    if (answered[i] !== undefined || submitted) return;
+    answered[i] = j; updateProg();
+    for (let k=0; k<data[i].opts.length; k++) {
+      const el = document.getElementById(`w3o-${i}-${k}`);
+      if (el) el.classList.toggle('selected', k===j);
+    }
+  };
+
+  window.w3tf = function(i, val) {
+    if (answered[i] !== undefined || submitted) return;
+    answered[i] = val; updateProg();
+    const t = document.getElementById(`w3tf-${i}-t`);
+    const f = document.getElementById(`w3tf-${i}-f`);
+    if(t) t.classList.toggle('selected', val===true);
+    if(f) f.classList.toggle('selected', val===false);
+  };
+
+  window.w3sa = function(i) {
+    const ta = document.getElementById(`w3ta-${i}`);
+    if (ta && ta.value.trim()) answered[i] = ta.value.trim(); else delete answered[i];
+    updateProg();
+  };
+
+  window.w3reveal = function(i) {
+    document.getElementById(`w3ans-${i}`).classList.toggle('open');
+  };
+
+  window.w3submit = function() {
+    if (submitted) return; submitted = true;
+    const data = getFiltered();
+    let correct=0, wrong=0, sa=0;
+    data.forEach((q,i) => {
+      const ab = document.getElementById(`w3ans-${i}`);
+      if (q.type === 'mc') {
+        const ua = answered[i];
+        for(let k=0;k<q.opts.length;k++){
+          const el=document.getElementById(`w3o-${i}-${k}`);
+          if(!el) continue;
+          el.classList.remove('selected');
+          if(k===q.ans) el.classList.add('correct');
+          else if(k===ua && ua!==q.ans) el.classList.add('wrong');
+        }
+        if(ua===q.ans){correct++;if(ab){ab.classList.add('open','feedback-correct');ab.innerHTML='<div class="fb-label lbl-correct">✓ Correct</div><p>'+q.fb+'</p>';}}
+        else{wrong++;if(ab){ab.classList.add('open','feedback-wrong');ab.innerHTML='<div class="fb-label lbl-wrong">✗ Incorrect</div><p>'+q.fb+'</p>';}}
+      } else if (q.type === 'tf') {
+        const ua = answered[i];
+        const t=document.getElementById(`w3tf-${i}-t`);
+        const f=document.getElementById(`w3tf-${i}-f`);
+        if(t)t.classList.remove('selected'); if(f)f.classList.remove('selected');
+        if(ua===q.ans){correct++;if(t&&q.ans===true)t.classList.add('correct');if(f&&q.ans===false)f.classList.add('correct');if(ab){ab.classList.add('open','feedback-correct');ab.innerHTML='<div class="fb-label lbl-correct">✓ Correct</div><p>'+q.fb+'</p>';}}
+        else{wrong++;if(t&&ua===true)t.classList.add('wrong');if(f&&ua===false)f.classList.add('wrong');if(q.ans===true&&t)t.classList.add('correct');if(q.ans===false&&f)f.classList.add('correct');if(ab){ab.classList.add('open','feedback-wrong');ab.innerHTML='<div class="fb-label lbl-wrong">✗ Incorrect</div><p>'+q.fb+'</p>';}}
+      } else {
+        sa++;
+        const ta=document.getElementById(`w3ta-${i}`); if(ta)ta.disabled=true;
+        if(ab){ab.classList.add('open','feedback-info');ab.innerHTML='<div class="fb-label lbl-info">Model answer</div><p>'+q.ans+'</p><p style="margin-top:8px;color:var(--ink-muted)">'+q.fb+'</p>';}
+      }
+    });
+    const gradable = data.filter(q=>q.type==='mc'||q.type==='tf').length;
+    document.getElementById('w3-correct').textContent=correct;
+    document.getElementById('w3-snum').textContent=correct;
+    document.getElementById('w3-sdenom').textContent='/ '+gradable;
+    document.getElementById('w3-sc').textContent=correct;
+    document.getElementById('w3-sw').textContent=wrong;
+    document.getElementById('w3-ss').textContent=sa;
+    document.getElementById('w3-score').classList.add('show');
+    document.getElementById('w3-prog').style.width='100%';
+  };
+
+  window.w3reset = function() {
+    answered={}; submitted=false;
+    document.getElementById('w3-score').classList.remove('show');
+    document.getElementById('w3-correct').textContent='0';
+    render();
+  };
+
+  render();
+}
+
+/* ── GENERIC MC-ONLY ENGINE (W4, W5) ── */
+function makeMCEngine(data, prefix, filterFn) {
+  let answered={}, submitted=false, currentFilter='all';
+
+  function getFiltered() {
+    if(currentFilter==='all') return data;
+    if(currentFilter==='exam') return data.filter(q=>q.isExam);
+    return filterFn ? filterFn(data, currentFilter) : data;
+  }
+
+  function render() {
+    const d = getFiltered();
+    const list = document.getElementById(`${prefix}-list`);
+    list.innerHTML = d.map((q,i)=>buildCard(q,i,d)).join('');
+    updateProg(d);
+  }
+
+  function buildCard(q,i,d) {
+    const examBadge = q.isExam ? `<span class="badge badge-exam">Exam focus</span>` : '';
+    const tagKey = q.tags ? q.tags.filter(t=>t!=='exam')[0] : '';
+    return `<div class="q-card"><div class="q-head"><span class="q-num-badge">Q${i+1}</span>${examBadge}<span class="badge badge-tag">${tagKey}</span><span class="q-text">${q.q}</span></div>
+    <div class="q-options">${q.opts.map((o,j)=>`<div class="opt" id="${prefix}o-${i}-${j}" onclick="${prefix}pick(${i},${j})"><span class="opt-key">${String.fromCharCode(65+j)}</span><span class="opt-text">${o}</span></div>`).join('')}</div>
+    <div class="q-foot"><button class="reveal-btn" onclick="${prefix}rev(${i})">${submitted?'Hide':'Show'} answer</button></div>
+    <div class="answer-box" id="${prefix}ans-${i}"><div class="fb-label lbl-reveal">Explanation</div><p>${q.fb||q.explanation||''}</p>${q.source?`<div class="fb-source">📄 ${q.source}</div>`:''}</div></div>`;
+  }
+
+  function updateProg(d) {
+    const pct = d.length ? (Object.keys(answered).length/d.length*100) : 0;
+    document.getElementById(`${prefix}-prog`).style.width = Math.min(pct,100)+'%';
+  }
+
+  window[`${prefix}filter`] = function(f,btn) {
+    currentFilter=f; answered={}; submitted=false;
+    document.querySelectorAll(`#${prefix==='w4'?'week4':'week5'} .fbtn`).forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(`${prefix}-score`).classList.remove('show');
+    render();
+  };
+
+  window[`${prefix}pick`] = function(i,j) {
+    const d=getFiltered();
+    if(answered[i]!==undefined||submitted) return;
+    answered[i]=j; updateProg(d);
+    for(let k=0;k<d[i].opts.length;k++){
+      const el=document.getElementById(`${prefix}o-${i}-${k}`);
+      if(el) el.classList.toggle('selected',k===j);
+    }
+  };
+
+  window[`${prefix}rev`] = function(i) {
+    document.getElementById(`${prefix}ans-${i}`).classList.toggle('open');
+  };
+
+  window[`${prefix}submit`] = function() {
+    if(submitted) return; submitted=true;
+    const d=getFiltered(); let correct=0,wrong=0;
+    d.forEach((q,i)=>{
+      const ua=answered[i]; const ab=document.getElementById(`${prefix}ans-${i}`);
+      for(let k=0;k<q.opts.length;k++){
+        const el=document.getElementById(`${prefix}o-${i}-${k}`);
+        if(!el) continue; el.classList.remove('selected');
+        if(k===q.ans) el.classList.add('correct');
+        else if(k===ua&&ua!==q.ans) el.classList.add('wrong');
+      }
+      if(ua===q.ans){correct++;if(ab){ab.classList.add('open','feedback-correct');ab.innerHTML='<div class="fb-label lbl-correct">✓ Correct</div><p>'+(q.fb||q.explanation||'')+'</p>'+(q.source?`<div class="fb-source">📄 ${q.source}</div>`:'')+''}}
+      else{wrong++;if(ab){ab.classList.add('open','feedback-wrong');ab.innerHTML='<div class="fb-label lbl-wrong">✗ Incorrect</div><p>'+(q.fb||q.explanation||'')+'</p>'+(q.source?`<div class="fb-source">📄 ${q.source}</div>`:'')}}
+    });
+    document.getElementById(`${prefix}-correct`).textContent=correct;
+    document.getElementById(`${prefix}-snum`).textContent=correct;
+    document.getElementById(`${prefix}-sdenom`).textContent='/ '+d.length;
+    document.getElementById(`${prefix}-sc`).textContent=correct;
+    document.getElementById(`${prefix}-sw`).textContent=wrong;
+    document.getElementById(`${prefix}-score`).classList.add('show');
+    document.getElementById(`${prefix}-prog`).style.width='100%';
+  };
+
+  window[`${prefix}reset`] = function() {
+    answered={}; submitted=false;
+    document.getElementById(`${prefix}-score`).classList.remove('show');
+    document.getElementById(`${prefix}-correct`).textContent='0';
+    render();
+  };
+
+  render();
+}
+
+/* ── W6 engine (exam/extra based) ── */
+function makeW6Engine() {
+  let answered={}, submitted=false, currentFilter='all';
+  const tagMap={acid:['acid'],cap:['cap'],nosql:['nosql'],sql:['sql']};
+
+  function getFiltered() {
+    if(currentFilter==='all') return W6;
+    if(currentFilter==='exam') return W6.filter(q=>q.type==='exam');
+    if(tagMap[currentFilter]) return W6.filter(q=>q.tags.some(t=>tagMap[currentFilter].includes(t)));
+    return W6;
+  }
+
+  function render() {
+    const d=getFiltered();
+    const list=document.getElementById('w6-list');
+    list.innerHTML=d.map((q,i)=>{
+      const tb=q.type==='exam'?'badge-exam':'badge-extra';
+      const tl=q.type==='exam'?'Exam focus':'Extra practice';
+      return `<div class="q-card"><div class="q-head"><span class="q-num-badge">Q${i+1}</span><span class="badge ${tb}">${tl}</span><span class="q-text">${q.q}</span></div>
+      <div class="q-options">${q.opts.map((o,j)=>`<div class="opt" id="w6o-${i}-${j}" onclick="w6pick(${i},${j})"><span class="opt-key">${String.fromCharCode(65+j)}</span><span class="opt-text">${o}</span></div>`).join('')}</div>
+      <div class="q-foot"><button class="reveal-btn" onclick="w6rev(${i})">Show answer</button></div>
+      <div class="answer-box" id="w6ans-${i}"><div class="fb-label lbl-reveal">Explanation</div><p>${q.explanation}</p><div class="fb-source">📄 ${q.source}</div></div></div>`;
+    }).join('');
+    updateProg(d);
+  }
+
+  function updateProg(d) {
+    const pct=d.length?(Object.keys(answered).length/d.length*100):0;
+    document.getElementById('w6-prog').style.width=Math.min(pct,100)+'%';
+  }
+
+  window.w6filter=function(f,btn){
+    currentFilter=f; answered={}; submitted=false;
+    document.querySelectorAll('#week6 .fbtn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('w6-score').classList.remove('show');
+    render();
+  };
+
+  window.w6pick=function(i,j){
+    const d=getFiltered();
+    if(answered[i]!==undefined||submitted) return;
+    answered[i]=j; updateProg(d);
+    for(let k=0;k<d[i].opts.length;k++){const el=document.getElementById(`w6o-${i}-${k}`);if(el)el.classList.toggle('selected',k===j);}
+  };
+
+  window.w6rev=function(i){document.getElementById(`w6ans-${i}`).classList.toggle('open');};
+
+  window.w6submit=function(){
+    if(submitted) return; submitted=true;
+    const d=getFiltered(); let correct=0,wrong=0;
+    d.forEach((q,i)=>{
+      const ua=answered[i]; const ab=document.getElementById(`w6ans-${i}`);
+      for(let k=0;k<q.opts.length;k++){const el=document.getElementById(`w6o-${i}-${k}`);if(!el)continue;el.classList.remove('selected');if(k===q.ans)el.classList.add('correct');else if(k===ua&&ua!==q.ans)el.classList.add('wrong');}
+      if(ua===q.ans){correct++;if(ab){ab.classList.add('open','feedback-correct');ab.innerHTML='<div class="fb-label lbl-correct">✓ Correct</div><p>'+q.explanation+'</p><div class="fb-source">📄 '+q.source+'</div>';}}
+      else{wrong++;if(ab){ab.classList.add('open','feedback-wrong');ab.innerHTML='<div class="fb-label lbl-wrong">✗ Incorrect</div><p>'+q.explanation+'</p><div class="fb-source">📄 '+q.source+'</div>';}}
+    });
+    document.getElementById('w6-correct').textContent=correct;
+    document.getElementById('w6-snum').textContent=correct;
+    document.getElementById('w6-sdenom').textContent='/ '+d.length;
+    document.getElementById('w6-sc').textContent=correct;
+    document.getElementById('w6-sw').textContent=wrong;
+    document.getElementById('w6-score').classList.add('show');
+    document.getElementById('w6-prog').style.width='100%';
+  };
+
+  window.w6reset=function(){
+    answered={}; submitted=false;
+    document.getElementById('w6-score').classList.remove('show');
+    document.getElementById('w6-correct').textContent='0';
+    render();
+  };
+
+  render();
+}
+
+/* ── BOOT ── */
+makeWeek3Engine();
+makeMCEngine(W4,'w4',(data,f)=>data.filter(q=>q.tags&&q.tags.includes(f)));
+makeMCEngine(W5,'w5',(data,f)=>data.filter(q=>q.tags&&q.tags.includes(f)));
+makeW6Engine();
+</script>
+</body>
+</html>
