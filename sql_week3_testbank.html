@@ -1,0 +1,360 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.wrap{padding:1.5rem 0;max-width:720px}
+h2{font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+.subtitle{font-size:13px;color:var(--color-text-secondary);margin-bottom:1.5rem}
+.progress-bar{height:4px;background:var(--color-border-tertiary);border-radius:2px;margin-bottom:1.5rem}
+.progress-fill{height:100%;background:#378ADD;border-radius:2px;transition:width .3s}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:1rem}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:.75rem}
+.q-num{font-size:12px;color:var(--color-text-secondary)}
+.badge{font-size:11px;padding:2px 8px;border-radius:var(--border-radius-md)}
+.badge-mc{background:var(--color-background-info);color:var(--color-text-info)}
+.badge-tf{background:var(--color-background-success);color:var(--color-text-success)}
+.badge-sa{background:var(--color-background-warning);color:var(--color-text-warning)}
+.badge-code{background:#EEEDFE;color:#3C3489}
+.q-text{font-size:15px;color:var(--color-text-primary);line-height:1.6;margin-bottom:1rem}
+.code-block{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.75rem 1rem;font-family:var(--font-mono);font-size:13px;color:var(--color-text-primary);margin-bottom:1rem;white-space:pre;overflow-x:auto}
+.options{display:flex;flex-direction:column;gap:6px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:.65rem .9rem;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;transition:background .15s;background:var(--color-background-primary)}
+.opt:hover{background:var(--color-background-secondary)}
+.opt.selected{border-color:#378ADD;background:#E6F1FB}
+.opt.selected .opt-label{color:#185FA5}
+.opt.correct{border-color:#1D9E75;background:#E1F5EE}
+.opt.correct .opt-label{color:#085041}
+.opt.wrong{border-color:#E24B4A;background:#FCEBEB}
+.opt.wrong .opt-label{color:#A32D2D}
+.opt-label{font-size:13px;font-weight:500;color:var(--color-text-secondary);min-width:18px}
+.opt-text{font-size:14px;color:var(--color-text-primary);line-height:1.5}
+.tf-row{display:flex;gap:8px}
+.tf-btn{flex:1;padding:.65rem;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;font-size:14px;background:var(--color-background-primary);color:var(--color-text-primary);transition:background .15s}
+.tf-btn:hover{background:var(--color-background-secondary)}
+.tf-btn.selected{border-color:#378ADD;background:#E6F1FB;color:#185FA5}
+.tf-btn.correct{border-color:#1D9E75;background:#E1F5EE;color:#085041}
+.tf-btn.wrong{border-color:#E24B4A;background:#FCEBEB;color:#A32D2D}
+textarea{width:100%;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.75rem;font-size:14px;font-family:var(--font-sans);color:var(--color-text-primary);background:var(--color-background-primary);resize:vertical;min-height:80px;outline:none}
+textarea:focus{border-color:#378ADD}
+.feedback{margin-top:.75rem;padding:.65rem .9rem;border-radius:var(--border-radius-md);font-size:13px;line-height:1.5;display:none}
+.feedback.show{display:block}
+.feedback.correct-fb{background:#E1F5EE;color:#085041;border:0.5px solid #5DCAA5}
+.feedback.wrong-fb{background:#FCEBEB;color:#A32D2D;border:0.5px solid #F09595}
+.feedback.info-fb{background:var(--color-background-info);color:var(--color-text-info);border:0.5px solid var(--color-border-tertiary)}
+.actions{display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap}
+button{padding:.5rem 1rem;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);font-size:13px;cursor:pointer;transition:background .15s}
+button:hover{background:var(--color-background-secondary)}
+button:active{transform:scale(.98)}
+button.primary{background:#378ADD;color:#fff;border-color:#185FA5}
+button.primary:hover{background:#185FA5}
+.score-card{display:none;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:2rem;text-align:center;margin-top:1rem}
+.score-card.show{display:block}
+.score-big{font-size:48px;font-weight:500;color:var(--color-text-primary);line-height:1}
+.score-denom{font-size:18px;color:var(--color-text-secondary)}
+.score-label{font-size:14px;color:var(--color-text-secondary);margin-top:.5rem;margin-bottom:1.5rem}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.5rem}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.75rem;text-align:center}
+.stat-n{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.stat-l{font-size:12px;color:var(--color-text-secondary)}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem}
+.filter-btn{padding:4px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:20px;font-size:12px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);transition:background .15s}
+.filter-btn.active{background:#378ADD;color:#fff;border-color:#185FA5}
+</style>
+
+<h2 class="sr-only">MTM4692 Week 3 SQL Test Bank — interactive quiz with multiple choice, true/false, and short answer questions</h2>
+
+<div class="wrap">
+<h2>MTM4692 Week 3 — SQL test bank</h2>
+<p class="subtitle">Applied SQL · JOINs, GROUP BY, subqueries & execution order · <span id="total-count">0</span> questions</p>
+
+<div class="filter-row" id="filters">
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="mc">Multiple choice</button>
+  <button class="filter-btn" data-filter="tf">True / False</button>
+  <button class="filter-btn" data-filter="sa">Short answer</button>
+  <button class="filter-btn" data-filter="code">SQL writing</button>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+
+<div id="quiz-container"></div>
+
+<div class="score-card" id="score-card">
+  <div class="score-big" id="score-num">0</div>
+  <div class="score-denom" id="score-denom">/ 0</div>
+  <div class="score-label">auto-graded score (short answer questions excluded)</div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-n" id="s-correct">0</div><div class="stat-l">Correct</div></div>
+    <div class="stat"><div class="stat-n" id="s-wrong">0</div><div class="stat-l">Wrong</div></div>
+    <div class="stat"><div class="stat-n" id="s-sa">0</div><div class="stat-l">Self-grade</div></div>
+  </div>
+  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+    <button class="primary" onclick="resetQuiz()">Retake quiz</button>
+    <button onclick="sendPrompt('Can you explain the questions I got wrong in the Week 3 SQL quiz?')">Review with Claude ↗</button>
+  </div>
+</div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  {type:'mc', topic:'JOINs', q:'Which JOIN type returns only rows where there is a matching value in both tables?', opts:['LEFT JOIN','INNER JOIN','FULL OUTER JOIN','CROSS JOIN'], ans:1,
+   fb:'INNER JOIN returns only matching rows. Rows without a match in either table are excluded.'},
+  {type:'mc', topic:'JOINs', q:'Student table has 4 rows and course table has 5 rows. How many rows does a CROSS JOIN produce?', opts:['4','5','9','20'], ans:3,
+   fb:'CROSS JOIN produces the Cartesian product: 4 × 5 = 20 rows.'},
+  {type:'mc', topic:'JOINs', q:'Which pattern is used to find students with NO department assigned?', opts:['INNER JOIN + WHERE dept_id = 0','LEFT JOIN + WHERE d.dept_id IS NULL','FULL OUTER JOIN','CROSS JOIN + HAVING COUNT(*) = 0'], ans:1,
+   fb:'LEFT JOIN returns all left-table rows. Filtering WHERE right.pk IS NULL keeps only rows with no match — the Anti-Join pattern.'},
+  {type:'mc', topic:'JOINs', q:'SQLite does NOT natively support which JOIN type?', opts:['INNER JOIN','LEFT JOIN','CROSS JOIN','RIGHT JOIN'], ans:3,
+   fb:'SQLite does not support RIGHT JOIN. The workaround is to swap the tables and use LEFT JOIN instead.'},
+  {type:'mc', topic:'JOINs', q:'In a Self JOIN on an employee table, why are two aliases needed?', opts:['To rename columns','To treat the same table as two separate logical tables','To improve performance','To bypass the FOREIGN KEY constraint'], ans:1,
+   fb:'The same table appears twice in the FROM/JOIN clause. Two aliases (e.g. e and m) let SQL distinguish which instance is the employee side vs the manager side.'},
+  {type:'mc', topic:'JOINs', q:'Which JOIN returns all rows from both tables, using NULL to fill unmatched columns?', opts:['LEFT JOIN','RIGHT JOIN','INNER JOIN','FULL OUTER JOIN'], ans:3,
+   fb:'FULL OUTER JOIN returns every row from both sides. Unmatched positions are filled with NULL.'},
+  {type:'mc', topic:'GROUP BY', q:'Which aggregate function ignores NULL values when counting?', opts:['COUNT(*)','COUNT(column)','SUM(column)','Both COUNT(column) and SUM(column)'], ans:3,
+   fb:'COUNT(*) counts all rows including NULLs. COUNT(column) and SUM(column) both skip NULLs. So the answer is both COUNT(column) and SUM(column).'},
+  {type:'mc', topic:'GROUP BY', q:'A SELECT uses GROUP BY dept_id. Which column can also appear in SELECT without an aggregate?', opts:['student_name','gpa','dept_id','email'], ans:2,
+   fb:'Only columns listed in GROUP BY can appear unaggregated in SELECT. All other columns must be wrapped in an aggregate function.'},
+  {type:'mc', topic:'HAVING', q:'What is the key difference between WHERE and HAVING?', opts:['WHERE is faster','WHERE filters rows before grouping; HAVING filters groups after GROUP BY','HAVING can only be used without GROUP BY','WHERE supports aggregate functions; HAVING does not'], ans:1,
+   fb:'WHERE is evaluated before GROUP BY (filters rows). HAVING is evaluated after GROUP BY (filters groups). Only HAVING can reference aggregate functions.'},
+  {type:'mc', topic:'HAVING', q:'Which query correctly filters departments with an average GPA above 3.0?', opts:[
+    'SELECT dept_id FROM student WHERE AVG(gpa) > 3.0 GROUP BY dept_id',
+    'SELECT dept_id, AVG(gpa) FROM student GROUP BY dept_id HAVING AVG(gpa) > 3.0',
+    'SELECT dept_id, AVG(gpa) AS avg FROM student GROUP BY dept_id HAVING avg > 3.0',
+    'SELECT dept_id FROM student HAVING AVG(gpa) > 3.0'
+  ], ans:1,
+   fb:'Option B is correct. Option A incorrectly uses WHERE with an aggregate. Option C uses an alias in HAVING which fails in standard SQL. Option D omits GROUP BY.'},
+  {type:'mc', topic:'Set Ops', q:'UNION vs UNION ALL — which keeps duplicate rows?', opts:['UNION','UNION ALL','Both keep duplicates','Neither keeps duplicates'], ans:1,
+   fb:'UNION removes duplicates (requires extra sorting work). UNION ALL keeps all rows including duplicates and is faster.'},
+  {type:'mc', topic:'Set Ops', q:'Which set operation returns only rows that appear in BOTH result sets?', opts:['UNION','EXCEPT','INTERSECT','UNION ALL'], ans:2,
+   fb:'INTERSECT returns the common rows between two result sets. UNION combines them; EXCEPT subtracts the second from the first.'},
+  {type:'mc', topic:'Set Ops', q:'Which set operation does MySQL NOT support (but SQLite does)?', opts:['UNION','UNION ALL','INTERSECT','All of the above'], ans:2,
+   fb:'MySQL does not support INTERSECT or EXCEPT. SQLite supports both.'},
+  {type:'mc', topic:'Subqueries', q:'A subquery in a WHERE clause that returns a single value is called a:', opts:['Correlated subquery','Derived table','Scalar subquery','Exists subquery'], ans:2,
+   fb:'A scalar subquery returns exactly one row and one column — a single value. It can be used anywhere a scalar value is expected, including WHERE and SELECT.'},
+  {type:'mc', topic:'Subqueries', q:'What makes a correlated subquery different from a non-correlated one?', opts:['It uses IN instead of EXISTS','It references a column from the outer query','It must appear in the FROM clause','It always returns more than one row'], ans:1,
+   fb:'A correlated subquery references a column from the outer query (e.g., WHERE s2.dept_id = s1.dept_id). This means it is re-evaluated for each row of the outer query.'},
+  {type:'mc', topic:'Subqueries', q:'A subquery used in the FROM clause must always have:', opts:['A WHERE clause','An alias','A HAVING clause','A GROUP BY clause'], ans:1,
+   fb:'Derived tables (subqueries in FROM) must be given an alias, e.g. FROM (...) AS dept_stats. Without an alias, SQL cannot reference the result set.'},
+  {type:'mc', topic:'Execution', q:'What is the correct SQL logical execution order?', opts:[
+    'SELECT → FROM → WHERE → GROUP BY → HAVING → ORDER BY',
+    'FROM → JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY',
+    'WHERE → FROM → SELECT → GROUP BY → ORDER BY',
+    'FROM → SELECT → WHERE → ORDER BY → GROUP BY'
+  ], ans:1,
+   fb:'The logical execution order is: FROM → JOIN → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT. Note that SELECT is near the end, which is why aliases defined in SELECT cannot be used in WHERE or HAVING.'},
+  {type:'mc', topic:'Execution', q:'Why can you use a SELECT alias in ORDER BY but NOT in HAVING?', opts:[
+    'ORDER BY runs before SELECT; HAVING runs after',
+    'HAVING runs before SELECT; ORDER BY runs after SELECT',
+    'Both HAVING and ORDER BY run before SELECT',
+    'Aliases are never allowed in ORDER BY'
+  ], ans:1,
+   fb:'HAVING is processed at step 5, before SELECT (step 6). Aliases created in SELECT do not yet exist at step 5. ORDER BY is at step 8, after SELECT, so aliases are available.'},
+  {type:'tf', topic:'JOINs', q:'In SQLite, you can swap tables and use LEFT JOIN as a workaround for RIGHT JOIN.', ans:true,
+   fb:'Correct. FROM department d LEFT JOIN student s ON ... produces the same result as FROM student s RIGHT JOIN department d ON ...'},
+  {type:'tf', topic:'JOINs', q:'A CROSS JOIN requires an ON clause to define the join condition.', ans:false,
+   fb:'CROSS JOIN produces the full Cartesian product with no condition. Adding ON would effectively make it an INNER JOIN.'},
+  {type:'tf', topic:'GROUP BY', q:'Every column in a SELECT statement with GROUP BY must either appear in GROUP BY or be inside an aggregate function.', ans:true,
+   fb:'This is the fundamental GROUP BY rule. Violating it causes an error in strict SQL (SQLite may be lenient, but it is bad practice).'},
+  {type:'tf', topic:'GROUP BY', q:'GROUP_CONCAT is a standard SQL aggregate function supported by all major databases.', ans:false,
+   fb:'GROUP_CONCAT is SQLite-specific. MySQL has GROUP_CONCAT too, but PostgreSQL uses STRING_AGG and SQL Server uses STRING_AGG or FOR XML PATH.'},
+  {type:'tf', topic:'HAVING', q:'You can use WHERE to filter the result of an aggregate function like AVG().', ans:false,
+   fb:'Aggregate functions cannot be used in WHERE because WHERE runs before GROUP BY. Use HAVING to filter on aggregate results.'},
+  {type:'tf', topic:'Set Ops', q:'UNION ALL is generally faster than UNION because it skips duplicate elimination.', ans:true,
+   fb:'UNION must sort or hash the results to remove duplicates, which adds overhead. UNION ALL simply concatenates result sets.'},
+  {type:'tf', topic:'Subqueries', q:'A correlated subquery runs once for the entire outer query.', ans:false,
+   fb:'A correlated subquery is re-executed for each row of the outer query, which can make it slow on large tables. A non-correlated subquery runs once independently.'},
+  {type:'tf', topic:'Execution', q:'A SELECT alias defined in the SELECT clause can be referenced in a HAVING clause in standard SQL.', ans:false,
+   fb:'In standard SQL, HAVING is evaluated before SELECT, so the alias does not yet exist. SQLite is lenient and sometimes allows it, but avoid this for portability.'},
+  {type:'sa', topic:'JOINs', q:'Describe the Anti-Join pattern in SQL. What JOIN type is used, and how is the WHERE clause written to achieve it?',
+   ans:'Use a LEFT JOIN between the two tables, then filter with WHERE right_table.primary_key IS NULL. This keeps only rows from the left table that have no match in the right table.',
+   fb:'Model answer: Use LEFT JOIN. After the join, add WHERE right_table.pk IS NULL in the WHERE clause. This keeps only rows from the left table that had no matching row in the right table. Example use case: "students with no enrollments".'},
+  {type:'sa', topic:'Execution', q:'Explain why the following query fails in standard SQL:\nSELECT dept_id, AVG(gpa) AS avg_gpa FROM student GROUP BY dept_id HAVING avg_gpa > 3.0;',
+   ans:'HAVING is processed before SELECT in the logical execution order. The alias avg_gpa is created in the SELECT step, which has not yet run when HAVING is evaluated. The fix is to repeat the expression: HAVING AVG(gpa) > 3.0.',
+   fb:'Model answer: HAVING is evaluated at step 5; SELECT is step 6. The alias avg_gpa does not exist yet when HAVING runs. Solution: write HAVING AVG(gpa) > 3.0 instead of using the alias.'},
+  {type:'sa', topic:'Subqueries', q:'What is the difference between a scalar subquery and a derived table (subquery in FROM)? Give one example use case for each.',
+   ans:'A scalar subquery appears in WHERE or SELECT and returns a single value (one row, one column). Example: WHERE gpa > (SELECT AVG(gpa) FROM student). A derived table appears in FROM and returns a multi-row, multi-column result set that must have an alias. Example: FROM (SELECT dept_id, AVG(gpa) AS avg_gpa FROM student GROUP BY dept_id) AS dept_stats.',
+   fb:'Scalar subquery: returns one value, used in WHERE/SELECT. Derived table: returns a full result set, used in FROM, must have an alias.'},
+  {type:'code', topic:'JOINs', q:'Write a SQL query to list all departments (including those with zero students) along with their student count. Use the tables: department(dept_id, dept_name) and student(student_id, dept_id).',
+   ans:'SELECT d.dept_name, COUNT(s.student_id) AS num_students\nFROM department d\nLEFT JOIN student s ON d.dept_id = s.dept_id\nGROUP BY d.dept_id, d.dept_name\nORDER BY num_students DESC;',
+   fb:'Key points: (1) LEFT JOIN on department ensures departments with no students appear. (2) COUNT(s.student_id) counts only matched students — COUNT(*) would count empty departments as 1. (3) GROUP BY both dept_id and dept_name.'},
+  {type:'code', topic:'GROUP BY', q:'Write a query to find all courses with more than 2 enrolled students. Use: enrollment(enrollment_id, student_id, course_id) and course(course_id, course_name).',
+   ans:'SELECT c.course_name, COUNT(*) AS num_students\nFROM enrollment e\nJOIN course c ON e.course_id = c.course_id\nGROUP BY c.course_id, c.course_name\nHAVING COUNT(*) > 2;',
+   fb:'Key points: JOIN enrollment to course, GROUP BY course, use HAVING (not WHERE) to filter on the aggregate COUNT(*) > 2.'},
+  {type:'code', topic:'Subqueries', q:'Write a query to find all students whose GPA is above the overall average GPA. Use: student(student_id, first_name, last_name, gpa).',
+   ans:'SELECT first_name, last_name, gpa\nFROM student\nWHERE gpa > (SELECT AVG(gpa) FROM student)\nORDER BY gpa DESC;',
+   fb:'This uses a scalar subquery in WHERE. The inner query (SELECT AVG(gpa) FROM student) runs once and returns a single average value.'},
+  {type:'code', topic:'Set Ops', q:'Write a query using EXCEPT to find dept_id values that have students but NO courses. Use: student(student_id, dept_id) and course(course_id, dept_id).',
+   ans:'SELECT dept_id FROM student WHERE dept_id IS NOT NULL\nEXCEPT\nSELECT dept_id FROM course WHERE dept_id IS NOT NULL;',
+   fb:'EXCEPT subtracts the second result set from the first. The IS NOT NULL guards ensure we do not include unassigned rows.'},
+];
+
+let current = [...ALL_QUESTIONS];
+let filter = 'all';
+let answered = {};
+let submitted = false;
+
+function applyFilter(f) {
+  filter = f;
+  answered = {};
+  submitted = false;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+  current = f === 'all' ? [...ALL_QUESTIONS] : ALL_QUESTIONS.filter(q => q.type === f);
+  render();
+}
+
+document.querySelectorAll('.filter-btn').forEach(b => b.addEventListener('click', () => applyFilter(b.dataset.filter)));
+
+function typeLabel(t) {
+  if(t==='mc') return ['mc','Multiple choice'];
+  if(t==='tf') return ['tf','True / False'];
+  if(t==='sa') return ['sa','Short answer'];
+  return ['code','SQL writing'];
+}
+
+function render() {
+  const c = document.getElementById('quiz-container');
+  document.getElementById('total-count').textContent = current.length;
+  document.getElementById('score-card').classList.remove('show');
+  document.getElementById('prog').style.width = '0%';
+
+  let html = '';
+  current.forEach((q, i) => {
+    const [cls, label] = typeLabel(q.type);
+    html += `<div class="card" id="card-${i}">
+      <div class="q-meta">
+        <span class="q-num">Q${i+1} of ${current.length}</span>
+        <span class="badge badge-${cls}">${label}</span>
+        <span class="q-num" style="margin-left:auto;color:var(--color-text-secondary)">${q.topic}</span>
+      </div>
+      <div class="q-text">${q.q.replace(/\n/g,'<br>')}</div>`;
+
+    if(q.type === 'mc') {
+      html += `<div class="options">`;
+      q.opts.forEach((o, j) => {
+        html += `<div class="opt" id="opt-${i}-${j}" onclick="selectMC(${i},${j})">
+          <span class="opt-label">${String.fromCharCode(65+j)}</span>
+          <span class="opt-text">${o}</span>
+        </div>`;
+      });
+      html += `</div>`;
+    } else if(q.type === 'tf') {
+      html += `<div class="tf-row">
+        <button class="tf-btn" id="tf-${i}-true" onclick="selectTF(${i},true)">True</button>
+        <button class="tf-btn" id="tf-${i}-false" onclick="selectTF(${i},false)">False</button>
+      </div>`;
+    } else {
+      html += `<textarea id="ta-${i}" placeholder="Write your answer here..." oninput="markSA(${i})"></textarea>`;
+      if(q.type === 'code') html += `<div style="font-size:12px;color:var(--color-text-secondary);margin-top:4px">Write SQL — answer will be self-graded against the model answer.</div>`;
+    }
+
+    html += `<div class="feedback" id="fb-${i}"></div></div>`;
+  });
+
+  html += `<div class="actions"><button class="primary" onclick="submitAll()">Submit all answers</button><button onclick="resetQuiz()">Reset</button></div>`;
+  c.innerHTML = html;
+  updateProgress();
+}
+
+function selectMC(qi, oi) {
+  if(answered[qi] !== undefined) return;
+  const q = current[qi];
+  answered[qi] = oi;
+  for(let j=0;j<q.opts.length;j++) {
+    const el = document.getElementById(`opt-${qi}-${j}`);
+    if(j===oi) el.classList.add('selected');
+  }
+  updateProgress();
+}
+
+function selectTF(qi, val) {
+  if(answered[qi] !== undefined) return;
+  answered[qi] = val;
+  document.getElementById(`tf-${qi}-true`).classList.toggle('selected', val===true);
+  document.getElementById(`tf-${qi}-false`).classList.toggle('selected', val===false);
+  updateProgress();
+}
+
+function markSA(qi) {
+  const val = document.getElementById(`ta-${qi}`).value.trim();
+  if(val) answered[qi] = val; else delete answered[qi];
+  updateProgress();
+}
+
+function updateProgress() {
+  const pct = current.length ? (Object.keys(answered).length / current.length * 100) : 0;
+  document.getElementById('prog').style.width = pct + '%';
+}
+
+function submitAll() {
+  if(submitted) return;
+  submitted = true;
+  let correct=0, wrong=0, sa=0;
+  const gradable = current.filter(q => q.type==='mc'||q.type==='tf');
+
+  current.forEach((q, i) => {
+    const fb = document.getElementById(`fb-${i}`);
+    fb.classList.add('show');
+
+    if(q.type==='mc') {
+      const userAns = answered[i];
+      if(userAns === undefined) {
+        fb.className='feedback show info-fb';
+        fb.innerHTML = '⚪ Not answered. ' + q.fb;
+        return;
+      }
+      if(userAns === q.ans) {
+        correct++;
+        document.getElementById(`opt-${i}-${userAns}`).classList.replace('selected','correct');
+        fb.className='feedback show correct-fb';
+        fb.innerHTML = '✓ Correct. ' + q.fb;
+      } else {
+        wrong++;
+        document.getElementById(`opt-${i}-${userAns}`).classList.replace('selected','wrong');
+        document.getElementById(`opt-${i}-${q.ans}`).classList.add('correct');
+        fb.className='feedback show wrong-fb';
+        fb.innerHTML = '✗ Incorrect. ' + q.fb;
+      }
+    } else if(q.type==='tf') {
+      const userAns = answered[i];
+      if(userAns === undefined) {
+        fb.className='feedback show info-fb';
+        fb.innerHTML = '⚪ Not answered. ' + q.fb;
+        return;
+      }
+      if(userAns === q.ans) {
+        correct++;
+        document.getElementById(`tf-${i}-${userAns}`).classList.replace('selected','correct');
+        fb.className='feedback show correct-fb';
+        fb.innerHTML = '✓ Correct. ' + q.fb;
+      } else {
+        wrong++;
+        document.getElementById(`tf-${i}-${userAns}`).classList.replace('selected','wrong');
+        document.getElementById(`tf-${i}-${q.ans}`).classList.add('correct');
+        fb.className='feedback show wrong-fb';
+        fb.innerHTML = '✗ Incorrect. ' + q.fb;
+      }
+    } else {
+      sa++;
+      const ta = document.getElementById(`ta-${i}`);
+      if(ta) ta.disabled = true;
+      fb.className='feedback show info-fb';
+      fb.innerHTML = '<strong>Model answer:</strong> ' + q.ans + '<br><br><em>' + q.fb + '</em>';
+    }
+  });
+
+  document.getElementById('score-num').textContent = correct;
+  document.getElementById('score-denom').textContent = '/ ' + gradable.length;
+  document.getElementById('s-correct').textContent = correct;
+  document.getElementById('s-wrong').textContent = wrong;
+  document.getElementById('s-sa').textContent = sa;
+  document.getElementById('score-card').classList.add('show');
+  document.getElementById('prog').style.width = '100%';
+}
+
+function resetQuiz() {
+  answered = {};
+  submitted = false;
+  render();
+}
+
+render();
+</script>
