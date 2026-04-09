@@ -1,0 +1,297 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .qb { padding: 1rem 0; max-width: 760px; }
+  .header { margin-bottom: 1.5rem; }
+  .header h2 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+  .header p { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .filter-btn { font-size: 12px; padding: 4px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: 20px; background: transparent; color: var(--color-text-secondary); cursor: pointer; transition: all 0.15s; }
+  .filter-btn.active { background: var(--color-background-info); color: var(--color-text-info); border-color: var(--color-border-info); }
+  .stats { display: flex; gap: 12px; margin-bottom: 1.5rem; }
+  .stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.6rem 1rem; text-align: center; flex: 1; }
+  .stat-num { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+  .stat-label { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+  .q-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+  .q-header { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 0.75rem; flex-wrap: wrap; }
+  .q-num { font-size: 11px; font-weight: 500; color: var(--color-text-info); background: var(--color-background-info); border-radius: 4px; padding: 2px 7px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+  .q-tag { font-size: 11px; color: var(--color-text-secondary); background: var(--color-background-secondary); border-radius: 4px; padding: 2px 7px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+  .exam-badge { font-size: 11px; color: #854F0B; background: #FAEEDA; border-radius: 4px; padding: 2px 7px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+  .q-text { font-size: 14px; color: var(--color-text-primary); line-height: 1.6; flex: 1; min-width: 200px; }
+  .options { display: flex; flex-direction: column; gap: 6px; margin-bottom: 0.75rem; }
+  .opt { font-size: 13px; padding: 6px 10px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); color: var(--color-text-secondary); cursor: pointer; transition: all 0.15s; }
+  .opt:hover { background: var(--color-background-secondary); border-color: var(--color-border-secondary); }
+  .opt.correct { background: #EAF3DE; border-color: #639922; color: #3B6D11; }
+  .opt.wrong { background: #FCEBEB; border-color: #E24B4A; color: #A32D2D; }
+  .opt.revealed-correct { background: #EAF3DE; border-color: #639922; color: #3B6D11; }
+  .answer-box { display: none; margin-top: 0.5rem; padding: 0.75rem 1rem; background: var(--color-background-secondary); border-radius: var(--border-radius-md); border-left: 3px solid #639922; }
+  .answer-box.show { display: block; }
+  .ans-label { font-size: 11px; font-weight: 500; color: #3B6D11; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .answer-box p { font-size: 13px; color: var(--color-text-primary); line-height: 1.6; }
+  .source { font-size: 11px; color: var(--color-text-tertiary); margin-top: 6px; font-style: italic; }
+  .reveal-btn { font-size: 12px; padding: 4px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: 20px; background: transparent; color: var(--color-text-secondary); cursor: pointer; }
+  .reveal-btn:hover { background: var(--color-background-secondary); }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--color-background-secondary); padding: 1px 5px; border-radius: 3px; color: var(--color-text-primary); }
+</style>
+
+<div class="qb">
+  <h2 class="sr-only">SQL Views — Question Bank (MTM4692 Week 5)</h2>
+  <div class="header">
+    <h2>SQL views — question bank</h2>
+    <p>MTM4692 Week 5 · Click an option to check your answer, or use "Show answer"</p>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterQ('all',this)">All (20)</button>
+    <button class="filter-btn" onclick="filterQ('exam',this)">Exam focus</button>
+    <button class="filter-btn" onclick="filterQ('basics',this)">View basics</button>
+    <button class="filter-btn" onclick="filterQ('create',this)">Create & manage</button>
+    <button class="filter-btn" onclick="filterQ('updatable',this)">Updatable views</button>
+    <button class="filter-btn" onclick="filterQ('security',this)">Security</button>
+    <button class="filter-btn" onclick="filterQ('perf',this)">Performance</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="total-stat">20</div><div class="stat-label">Questions</div></div>
+    <div class="stat"><div class="stat-num" id="correct-stat">0</div><div class="stat-label">Correct</div></div>
+    <div class="stat"><div class="stat-num" id="attempted-stat">0</div><div class="stat-label">Attempted</div></div>
+  </div>
+
+  <div id="q-list"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    id:1, tags:['basics','exam'], isExam:true,
+    text:"Which of the following is TRUE about views?",
+    options:["Views store data in the database like tables","Views execute their underlying query each time they are accessed","Views cannot be used in JOIN operations","Views are faster than tables because they cache data"],
+    correct:1,
+    answer:"A view is a saved SELECT query — it stores no data of its own. Every time you query the view, the underlying SELECT is re-executed against the base tables. This means views are always up-to-date but can be slower than reading from a real table.",
+    source:"Week05_Views.pdf — Exam Focus: Views, slide 13"
+  },
+  {
+    id:2, tags:['basics','exam'], isExam:true,
+    text:"Which is a valid benefit of using views?",
+    options:["Views automatically improve query performance","Views can replace all tables in a database","Views can restrict user access to specific columns of a table","Views always store computed results for faster access"],
+    correct:2,
+    answer:"Views are an excellent security tool: you can expose only selected columns (e.g. hide salary or SSN) by granting users access to the view instead of the base table. This is called column-level access control.",
+    source:"Week05_Views.pdf — Exam Focus: Views, slide 13 & Views for Security: Column-Level, slide 31"
+  },
+  {
+    id:3, tags:['basics'], isExam:false,
+    text:"What is a view in SQL?",
+    options:["A copy of a table stored in memory","A named SELECT query stored in the database that acts as a virtual table","A special index that speeds up complex queries","A temporary table deleted after the session ends"],
+    correct:1,
+    answer:"A view is a named SELECT query stored in the database. It looks and behaves like a table when you query it, but it stores no data itself — it is a virtual table. The underlying query is re-run each time the view is accessed.",
+    source:"Week05_Views.pdf — Views: Virtual Tables, slide 7"
+  },
+  {
+    id:4, tags:['basics'], isExam:false,
+    text:"How does a view differ from a regular table in terms of storage?",
+    options:["A view uses more disk space than a table","A view stores only a compressed version of the data","A view stores only the query definition, not the data","A view stores data in a separate schema"],
+    correct:2,
+    answer:"A view occupies minimal space because it only stores the query definition (the SELECT statement). The actual data lives in the underlying base tables. Every access to the view re-executes the query.",
+    source:"Week05_Views.pdf — Views vs Tables, slide 8"
+  },
+  {
+    id:5, tags:['create','exam'], isExam:true,
+    text:"How do you change the definition of an existing view in SQLite?",
+    options:["ALTER VIEW view_name AS SELECT ...","MODIFY VIEW view_name AS SELECT ...","Drop the view and recreate it with the new definition","UPDATE sqlite_master SET sql = ... WHERE name = 'view_name'"],
+    correct:2,
+    answer:"SQLite does not support ALTER VIEW. The only way to change a view's definition is to DROP VIEW first and then CREATE VIEW again with the new SELECT statement. This is a common exam trap.",
+    source:"Week05_Views.pdf — Exam Focus: CREATE VIEW, slide 19 & Managing Views, slide 17"
+  },
+  {
+    id:6, tags:['create'], isExam:false,
+    text:"Which SQL statement correctly lists all views in a SQLite database?",
+    options:["SHOW VIEWS;","SELECT name FROM sqlite_master WHERE type = 'view';","SELECT * FROM information_schema.views;",".listviews"],
+    correct:1,
+    answer:"In SQLite, all database objects (tables, views, indexes, triggers) are stored in the sqlite_master table. Filtering by type = 'view' returns all view names. You can also use .schema to see view definitions.",
+    source:"Week05_Views.pdf — Managing Views, slide 17"
+  },
+  {
+    id:7, tags:['create'], isExam:false,
+    text:"A view is created with <code>CREATE VIEW v_honor_roll AS SELECT ... WHERE gpa >= 3.5</code>. A student with gpa = 2.8 is added to the base table. What does querying <code>v_honor_roll</code> show?",
+    options:["The new student appears because the view auto-refreshes","The new student does not appear — the WHERE filter excludes them","An error is raised because the data is inconsistent","The view must be dropped and recreated to reflect the change"],
+    correct:1,
+    answer:"Views are always live — they re-execute their query each time. Because the student's gpa of 2.8 does not satisfy WHERE gpa >= 3.5, that student will never appear in the view, even though they exist in the base table.",
+    source:"Week05_Views.pdf — Views: Virtual Tables, slide 7"
+  },
+  {
+    id:8, tags:['create'], isExam:false,
+    text:"What risk should you be aware of when creating nested views (a view built on another view)?",
+    options:["Nested views are forbidden in SQLite","They can be hard to debug and may have performance implications","The inner view is deleted when the outer view is created","They always cause infinite loops"],
+    correct:1,
+    answer:"Nested views (views on views) add complexity: when the outer view is queried, every inner view's query also re-executes. Deep nesting makes it hard to debug query plans and can degrade performance significantly. Best practice is to limit nesting to 2 levels.",
+    source:"Week05_Views.pdf — Views on Views (Nested Views), slide 18 & View Best Practices, slide 38"
+  },
+  {
+    id:9, tags:['updatable','exam'], isExam:true,
+    text:"What does WITH CHECK OPTION do for a view?",
+    options:["Improves query performance","Prevents INSERT/UPDATE operations that would create rows not visible through the view","Adds a CHECK constraint to the underlying table","Enables the view to be updated"],
+    correct:1,
+    answer:"WITH CHECK OPTION enforces that any INSERT or UPDATE through the view must satisfy the view's WHERE condition. Without it, you could insert a row that immediately 'disappears' from the view because it doesn't match the filter.",
+    source:"Week05_Views.pdf — Exam Focus: WITH CHECK OPTION, slide 25"
+  },
+  {
+    id:10, tags:['updatable','exam'], isExam:true,
+    text:"What happens if you INSERT a row through a view (without WITH CHECK OPTION) that doesn't match the view's WHERE clause?",
+    options:["The INSERT fails with an error","The row is inserted into the table but not visible through the view","The row is inserted and visible through the view","The view is automatically updated to include the row"],
+    correct:1,
+    answer:"Without WITH CHECK OPTION, the INSERT succeeds and the row is written to the base table — but since the new row doesn't satisfy the view's WHERE condition, it is invisible when you query the view. The data exists but is 'hidden' from the view.",
+    source:"Week05_Views.pdf — Exam Focus: WITH CHECK OPTION, slide 26"
+  },
+  {
+    id:11, tags:['updatable'], isExam:false,
+    text:"Which of the following views is updatable (INSERT/UPDATE/DELETE allowed) in SQLite without triggers?",
+    options:["A view with GROUP BY and AVG()","A view joining two tables with a JOIN","A view using DISTINCT","A view selecting columns from a single table with no aggregation"],
+    correct:3,
+    answer:"For a view to be updatable in SQLite, it must reference exactly one table and must not use aggregations, DISTINCT, GROUP BY, HAVING, subqueries in SELECT, or set operations. A simple single-table projection meets all these criteria.",
+    source:"Week05_Views.pdf — Can You INSERT/UPDATE/DELETE Through a View?, slide 21"
+  },
+  {
+    id:12, tags:['updatable'], isExam:false,
+    text:"A view uses <code>SELECT dept_id, COUNT(*) AS cnt, AVG(gpa) FROM student GROUP BY dept_id</code>. Can you INSERT through this view?",
+    options:["Yes, because it references only one table","Yes, if you use WITH CHECK OPTION","No, because it uses aggregate functions and GROUP BY","No, because it has an alias (cnt)"],
+    correct:2,
+    answer:"Aggregate functions (COUNT, AVG) and GROUP BY make a view non-updatable. The result rows don't correspond 1-to-1 with rows in the base table, so the database cannot map an INSERT back to a specific row.",
+    source:"Week05_Views.pdf — Non-Updatable Views, slide 23"
+  },
+  {
+    id:13, tags:['updatable'], isExam:false,
+    text:"What is the purpose of an INSTEAD OF trigger on a view in SQLite?",
+    options:["To speed up SELECT queries on the view","To make the view read-only","To intercept INSERT/UPDATE/DELETE on the view and redirect them to the base tables","To automatically refresh a materialized view"],
+    correct:2,
+    answer:"INSTEAD OF triggers fire in place of the DML operation on the view. They let you define exactly what happens to the underlying base tables when someone inserts, updates, or deletes through the view — even complex multi-table views can be made 'writable' this way.",
+    source:"Week05_Views.pdf — INSTEAD OF Triggers (Required for Updatable Views), slide 27"
+  },
+  {
+    id:14, tags:['updatable'], isExam:false,
+    text:"SQLite's support note states that even simple views meeting all updatable criteria still require what to actually perform DML?",
+    options:["WITH CHECK OPTION","A covering index on the base table","INSTEAD OF triggers","ALTER VIEW ... ENABLE UPDATE"],
+    correct:2,
+    answer:"The slides note that in SQLite, even views that technically qualify as updatable (single table, no aggregation, etc.) still require INSTEAD OF triggers in practice for INSERT/UPDATE/DELETE to work reliably. This is a SQLite-specific behaviour difference from other RDBMS.",
+    source:"Week05_Views.pdf — Updatable View Example (Theory), slide 22"
+  },
+  {
+    id:15, tags:['security'], isExam:false,
+    text:"A company wants general users to see employee names and departments but NOT salaries or SSNs. What is the best approach?",
+    options:["Delete the salary and SSN columns from the table","Create a view that selects only the safe columns and grant access to the view","Encrypt the salary column","Add a WHERE clause to every SELECT query in the application"],
+    correct:1,
+    answer:"Column-level security with views is the standard approach: create a view that exposes only the safe columns, grant SELECT on the view to general users, and revoke direct SELECT on the underlying table. The sensitive columns never appear in the view.",
+    source:"Week05_Views.pdf — Views for Security: Column-Level, slide 31"
+  },
+  {
+    id:16, tags:['security'], isExam:false,
+    text:"A view is created as <code>SELECT * FROM orders WHERE order_date >= date('now', '-30 days')</code>. What type of access control does this implement?",
+    options:["Column-level security","Row-level security","Schema-level security","Trigger-based security"],
+    correct:1,
+    answer:"This is row-level security: the view acts as a permanent WHERE filter, allowing users to see only certain rows (recent orders in this case) without having direct access to the full table. It hides entire rows rather than individual columns.",
+    source:"Week05_Views.pdf — Views for Security: Row-Level, slide 32"
+  },
+  {
+    id:17, tags:['perf','exam'], isExam:true,
+    text:"What is the main difference between a regular view and a materialized view?",
+    options:["A regular view is faster than a materialized view","A materialized view stores the query result while a regular view re-executes the query each time","Regular views support WITH CHECK OPTION but materialized views don't","Materialized views are always up-to-date"],
+    correct:1,
+    answer:"A regular view stores only the query definition and re-executes it on every access — always current but potentially slow. A materialized view stores the actual result set as a physical table — very fast to read, but must be manually refreshed when the base data changes.",
+    source:"Week05_Views.pdf — Exam Focus: Materialized Views, slide 37"
+  },
+  {
+    id:18, tags:['perf'], isExam:false,
+    text:"Does SQLite natively support materialized views?",
+    options:["Yes, with the CREATE MATERIALIZED VIEW syntax","Yes, but only for single-table views","No, but you can simulate one by creating a regular table from a SELECT and refreshing it manually","No, and there is no workaround"],
+    correct:2,
+    answer:"SQLite has no native CREATE MATERIALIZED VIEW command. The workaround is: CREATE TABLE mv_name AS SELECT ... (runs the query and stores results), then refresh by DROP TABLE + CREATE TABLE again when data changes. It's a real table, so reads are fast.",
+    source:"Week05_Views.pdf — Materialized Views (Concept), slides 35–36"
+  },
+  {
+    id:19, tags:['perf'], isExam:false,
+    text:"A view wraps a complex JOIN and GROUP BY query. It is accessed 100 times per hour. What is a concern?",
+    options:["The view definition will be corrupted over time","The complex query re-executes all 100 times, which may impact performance","Views cannot contain GROUP BY","The view will lock the table for each access"],
+    correct:1,
+    answer:"Because views store no data, every access re-runs the full underlying query. A heavy JOIN + aggregation query running 100 times per hour can be a significant performance burden. Solutions: add indexes to the base tables, avoid deeply nested views, or simulate a materialized view for read-heavy reports.",
+    source:"Week05_Views.pdf — View Performance Considerations, slides 33–34"
+  },
+  {
+    id:20, tags:['basics','create'], isExam:false,
+    text:"In the DB 3-level architecture, views belong to which layer?",
+    options:["Physical layer (internal)","Logical layer (conceptual)","View layer (external)","Application layer"],
+    correct:2,
+    answer:"In the 3-level database architecture, views belong to the external (view) layer — the highest abstraction level. They are what business analysts, end users, and applications interact with. The logical layer holds tables and relationships, and the physical layer handles raw data files and storage.",
+    source:"Week05_Views.pdf — DB 3-Level Architecture, slide 5"
+  }
+];
+
+let correct=0, attempted=0, activeFilter='all';
+
+function filterQ(tag, btn){
+  activeFilter=tag;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+function renderAll(){
+  const list = document.getElementById('q-list');
+  list.innerHTML='';
+  questions.forEach(q=>{
+    const show = activeFilter==='all'
+      || (activeFilter==='exam' && q.isExam)
+      || q.tags.includes(activeFilter);
+    if(!show) return;
+    list.innerHTML += buildCard(q);
+  });
+}
+
+function buildCard(q){
+  const badge = q.isExam ? `<span class="exam-badge">Exam focus</span>` : '';
+  const tagNames={'basics':'View basics','create':'Create & manage','updatable':'Updatable views','security':'Security','perf':'Performance','exam':'Exam focus'};
+  const mainTag = q.tags.filter(t=>t!=='exam')[0]||'';
+  const opts = q.options.map((o,i)=>
+    `<div class="opt" id="opt-${q.id}-${i}" onclick="selectOpt(${q.id},${i})">${String.fromCharCode(65+i)}) ${o}</div>`
+  ).join('');
+  return `<div class="q-card" id="card-${q.id}" data-tags="${q.tags.join(' ')}">
+    <div class="q-header">
+      <span class="q-num">Q${q.id}</span>
+      <span class="q-tag">${tagNames[mainTag]||mainTag}</span>
+      ${badge}
+      <span class="q-text">${q.text}</span>
+    </div>
+    <div class="options">${opts}</div>
+    <button class="reveal-btn" onclick="revealAnswer(${q.id})">Show answer</button>
+    <div class="answer-box" id="ans-${q.id}">
+      <div class="ans-label">Answer</div>
+      <p>${q.answer}</p>
+      <p class="source">Source: ${q.source}</p>
+    </div>
+  </div>`;
+}
+
+function selectOpt(qid, idx){
+  const q = questions.find(x=>x.id===qid);
+  const first = document.getElementById(`opt-${qid}-0`);
+  if(first.classList.contains('correct')||first.classList.contains('wrong')||first.classList.contains('revealed-correct')) return;
+  attempted++;
+  document.getElementById('attempted-stat').textContent=attempted;
+  for(let i=0;i<q.options.length;i++){
+    const el=document.getElementById(`opt-${qid}-${i}`);
+    if(i===q.correct) el.classList.add('correct');
+    else if(i===idx && idx!==q.correct) el.classList.add('wrong');
+  }
+  if(idx===q.correct){ correct++; document.getElementById('correct-stat').textContent=correct; }
+  document.getElementById(`ans-${qid}`).classList.add('show');
+}
+
+function revealAnswer(qid){
+  const q=questions.find(x=>x.id===qid);
+  for(let i=0;i<q.options.length;i++){
+    const el=document.getElementById(`opt-${qid}-${i}`);
+    if(i===q.correct && !el.classList.contains('correct')) el.classList.add('revealed-correct');
+  }
+  document.getElementById(`ans-${qid}`).classList.add('show');
+}
+
+renderAll();
+</script>
