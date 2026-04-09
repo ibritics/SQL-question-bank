@@ -1,0 +1,267 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.qb { padding: 1rem 0; max-width: 760px; }
+.header { margin-bottom: 1.5rem; }
+.header h2 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+.header p { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+.stats { display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 16px; font-size: 13px; color: var(--color-text-secondary); }
+.stat span { font-weight: 500; font-size: 18px; color: var(--color-text-primary); display: block; }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.filter-btn { background: transparent; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 6px 14px; font-size: 13px; cursor: pointer; color: var(--color-text-secondary); transition: all 0.15s; }
+.filter-btn.active { background: var(--color-background-info); color: var(--color-text-info); border-color: transparent; }
+.question-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+.q-header { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; }
+.q-num { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 3px 8px; white-space: nowrap; margin-top: 1px; }
+.q-type { font-size: 11px; padding: 3px 8px; border-radius: var(--border-radius-md); white-space: nowrap; margin-top: 1px; }
+.type-exam { background: #FAEEDA; color: #633806; }
+.type-extra { background: #E1F5EE; color: #085041; }
+.q-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.5; flex: 1; }
+.options { list-style: none; margin-bottom: 12px; }
+.options li { font-size: 14px; color: var(--color-text-secondary); padding: 6px 10px; border-radius: var(--border-radius-md); margin-bottom: 4px; border: 0.5px solid transparent; }
+.options li.correct { background: #EAF3DE; color: #27500A; border-color: #97C459; font-weight: 500; }
+.answer-box { display: none; background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px; font-size: 13px; line-height: 1.6; color: var(--color-text-secondary); border-left: 3px solid #1D9E75; }
+.answer-box.open { display: block; }
+.answer-box strong { color: var(--color-text-primary); font-weight: 500; }
+.source { font-size: 11px; color: var(--color-text-tertiary); margin-top: 8px; }
+.toggle-btn { background: transparent; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 5px 12px; font-size: 12px; cursor: pointer; color: var(--color-text-secondary); margin-top: 4px; }
+.toggle-btn:hover { background: var(--color-background-secondary); }
+.progress { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1rem; }
+</style>
+
+<div class="qb">
+  <div class="header">
+    <h2>Week 6 question bank — Relational vs NoSQL</h2>
+    <p>MTM4692 Applied SQL · Spring 2026 · Click "Show answer" on any card</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><span id="total-count">20</span>Total questions</div>
+    <div class="stat"><span>8</span>From exam slides</div>
+    <div class="stat"><span>12</span>Extra practice</div>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filter('all', this)">All (20)</button>
+    <button class="filter-btn" onclick="filter('exam', this)">Exam focus (8)</button>
+    <button class="filter-btn" onclick="filter('extra', this)">Extra practice (12)</button>
+    <button class="filter-btn" onclick="filter('acid', this)">ACID / BASE</button>
+    <button class="filter-btn" onclick="filter('cap', this)">CAP theorem</button>
+    <button class="filter-btn" onclick="filter('nosql', this)">NoSQL types</button>
+    <button class="filter-btn" onclick="filter('sql', this)">SQL vs NoSQL</button>
+  </div>
+
+  <div id="question-list"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    id: 1, type: 'exam', tags: ['acid'],
+    text: 'Which ACID property ensures that a transaction is either fully completed or fully rolled back?',
+    options: ['A) Consistency', 'B) Atomicity', 'C) Isolation', 'D) Durability'],
+    correct: 1,
+    explanation: 'Atomicity ("all or nothing") guarantees that every operation in a transaction succeeds together or the entire transaction is rolled back — no partial updates.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 14 (Exam Focus: ACID)'
+  },
+  {
+    id: 2, type: 'exam', tags: ['acid'],
+    text: 'Which ACID property guarantees that once a transaction is committed, it will survive system failures?',
+    options: ['A) Atomicity', 'B) Consistency', 'C) Isolation', 'D) Durability'],
+    correct: 3,
+    explanation: 'Durability means committed data is written to disk (e.g., via Write-Ahead Logging). Even if the server crashes immediately after COMMIT, the data is still there after restart.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 15 (Exam Focus: ACID)'
+  },
+  {
+    id: 3, type: 'exam', tags: ['acid'],
+    text: 'What does BASE stand for in the context of NoSQL databases?',
+    options: ['A) Binary Access Storage Engine', 'B) Basically Available, Soft state, Eventual consistency', 'C) Basic Availability Standard Extension', 'D) Batch Access System Environment'],
+    correct: 1,
+    explanation: 'BASE is the NoSQL alternative to ACID. "Basically Available" means the system always responds; "Soft state" means data may change due to replication lag; "Eventual consistency" means all replicas will eventually agree.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 20 (Exam Focus: BASE)'
+  },
+  {
+    id: 4, type: 'exam', tags: ['acid'],
+    text: 'Which statement about BASE is TRUE?',
+    options: ['A) BASE guarantees immediate consistency like ACID', 'B) BASE systems prioritize availability over strict consistency', 'C) BASE is only used in relational databases', 'D) BASE means the database is not reliable'],
+    correct: 1,
+    explanation: 'BASE trades strong consistency for high availability. Systems like Cassandra and DynamoDB will always respond, but the data returned may be slightly stale.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 20 (Exam Focus: BASE)'
+  },
+  {
+    id: 5, type: 'exam', tags: ['cap'],
+    text: 'According to the CAP theorem, a distributed database can guarantee at most how many of the three properties?',
+    options: ['A) All three simultaneously', 'B) Two out of three', 'C) Only one at a time', 'D) None — it is a theoretical limit only'],
+    correct: 1,
+    explanation: 'Brewer\'s CAP theorem (2000) states a distributed system can only guarantee two of: Consistency, Availability, and Partition Tolerance. Because network partitions are inevitable, real systems choose CP or AP.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 31 (Exam Focus: CAP Theorem)'
+  },
+  {
+    id: 6, type: 'exam', tags: ['cap'],
+    text: 'A system that prioritises Availability and Partition Tolerance (AP) will sacrifice:',
+    options: ['A) Performance', 'B) Strong consistency', 'C) Data storage', 'D) Security'],
+    correct: 1,
+    explanation: 'AP systems (e.g. Cassandra, DynamoDB, CouchDB) will always respond and survive network splits, but different nodes may temporarily return different values — strong consistency is sacrificed.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 31 (Exam Focus: CAP Theorem)'
+  },
+  {
+    id: 7, type: 'exam', tags: ['sql'],
+    text: 'When would you choose a relational database over NoSQL?',
+    options: ['A) When you need horizontal scaling across 100 servers', 'B) When data has no fixed schema', 'C) When data integrity and complex JOINs are critical', 'D) When write throughput exceeds 1 million ops/sec'],
+    correct: 2,
+    explanation: 'Relational databases excel when data is structured, relationships are important, and ACID compliance is required — e.g., banking, healthcare, and university systems.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 41 (Exam Focus: SQL vs NoSQL)'
+  },
+  {
+    id: 8, type: 'exam', tags: ['sql'],
+    text: 'What is "polyglot persistence"?',
+    options: ['A) Using only one database for all data', 'B) Using different database types for different data needs within one system', 'C) Translating SQL queries to multiple languages', 'D) A backup strategy using multiple servers'],
+    correct: 1,
+    explanation: 'Polyglot persistence means choosing the right database for each job in the same application — e.g., PostgreSQL for orders, MongoDB for product catalogs, Redis for caching, Neo4j for recommendations.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 42 (Exam Focus: Polyglot Persistence)'
+  },
+  {
+    id: 9, type: 'extra', tags: ['acid'],
+    text: 'In SQLite, if a server crashes between two UPDATE statements inside a transaction, what happens to the data?',
+    options: ['A) The first UPDATE is saved, the second is lost', 'B) Both UPDATEs are rolled back due to atomicity', 'C) Both UPDATEs are saved due to durability', 'D) The database becomes corrupted'],
+    correct: 1,
+    explanation: 'Atomicity ensures "all or nothing." If the system crashes mid-transaction, the Write-Ahead Log (WAL) is used on restart to roll back both updates, leaving the database in its original valid state.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 9 (ACID — Atomicity)'
+  },
+  {
+    id: 10, type: 'extra', tags: ['acid'],
+    text: 'Which isolation level provides the strongest guarantee that concurrent transactions do not interfere, but is also the slowest?',
+    options: ['A) Read Uncommitted', 'B) Read Committed', 'C) Repeatable Read', 'D) Serializable'],
+    correct: 3,
+    explanation: 'SERIALIZABLE is the strictest isolation level — it ensures transactions execute as if they were run one at a time, eliminating all concurrency anomalies but at the cost of performance.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 12 (Isolation levels)'
+  },
+  {
+    id: 11, type: 'extra', tags: ['acid'],
+    text: 'A CHECK constraint rejects a withdrawal because the account balance would go negative. Which ACID property is being enforced?',
+    options: ['A) Atomicity', 'B) Consistency', 'C) Isolation', 'D) Durability'],
+    correct: 1,
+    explanation: 'Consistency ensures data always moves from one valid state to another. Constraints (PK, FK, CHECK, UNIQUE, NOT NULL) are the mechanism — any violation causes the transaction to be rejected.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 10 (ACID — Consistency)'
+  },
+  {
+    id: 12, type: 'extra', tags: ['nosql'],
+    text: 'Which NoSQL database type is best suited for storing and querying highly connected data like a social network?',
+    options: ['A) Key-Value store (Redis)', 'B) Column-family store (Cassandra)', 'C) Document store (MongoDB)', 'D) Graph database (Neo4j)'],
+    correct: 3,
+    explanation: 'Graph databases store data as nodes and edges, making relationship traversal (e.g. "friends of friends", fraud patterns, recommendations) extremely efficient — something relational JOINs struggle with at scale.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slides 26–27 (Graph Databases)'
+  },
+  {
+    id: 13, type: 'extra', tags: ['nosql'],
+    text: 'A web application needs to store user session tokens for fast retrieval. Which database type is the best fit?',
+    options: ['A) Relational (PostgreSQL)', 'B) Key-Value store (Redis)', 'C) Graph database (Neo4j)', 'D) Column-family store (Cassandra)'],
+    correct: 1,
+    explanation: 'Key-Value stores like Redis keep data in memory, providing sub-millisecond lookup by key. They are ideal for caching, session management, and real-time counters.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 24 (Key-Value Stores)'
+  },
+  {
+    id: 14, type: 'extra', tags: ['nosql'],
+    text: 'IoT sensors generate millions of time-stamped readings per day. Which NoSQL type is most appropriate?',
+    options: ['A) Document store', 'B) Graph database', 'C) Key-Value store', 'D) Column-family store (Cassandra)'],
+    correct: 3,
+    explanation: 'Column-family stores like Cassandra are optimised for write-heavy, time-series workloads. Data is stored column by column, making range scans over time windows very efficient.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 25 (Column-Family Stores)'
+  },
+  {
+    id: 15, type: 'extra', tags: ['nosql'],
+    text: 'In a document database like MongoDB, how are related data items typically handled instead of JOINs?',
+    options: ['A) Foreign key references between collections', 'B) Embedding related data inside the same document', 'C) A separate join table is created', 'D) A middleware service performs the join'],
+    correct: 1,
+    explanation: 'Document databases embed related data (arrays, nested objects) directly in the document, enabling a single read to retrieve all needed information without cross-collection joins.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slides 22–23 (Document Databases)'
+  },
+  {
+    id: 16, type: 'extra', tags: ['cap'],
+    text: 'A banking application must never show an incorrect account balance. If a network partition occurs, it is acceptable to show "service unavailable." Which CAP choice is this?',
+    options: ['A) CA — Consistent and Available', 'B) AP — Available and Partition Tolerant', 'C) CP — Consistent and Partition Tolerant', 'D) All three — CAP theorem does not apply to banking'],
+    correct: 2,
+    explanation: 'CP systems sacrifice availability during a network partition to ensure every read returns the most recent correct write. Banking requires this because an incorrect balance is worse than a temporary outage.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 30 (CAP — Practical Choices)'
+  },
+  {
+    id: 17, type: 'extra', tags: ['sql'],
+    text: 'What SQLite function would you use to read a specific field from a JSON column?',
+    options: ['A) json_get()', 'B) json_extract()', 'C) json_field()', 'D) json_query()'],
+    correct: 1,
+    explanation: 'SQLite\'s json_extract(column, \'$.field\') reads a specific value from a JSON text column, e.g. json_extract(specs, \'$.brand\'). This allows document-style queries inside a relational engine.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 44 (SQLite JSON Support)'
+  },
+  {
+    id: 18, type: 'extra', tags: ['sql'],
+    text: 'Which of the following is a key difference between vertical scaling (SQL) and horizontal scaling (NoSQL)?',
+    options: ['A) Vertical scaling adds more servers; horizontal scaling adds more RAM to one server', 'B) Vertical scaling upgrades one server; horizontal scaling adds more servers', 'C) Vertical scaling is used only for NoSQL; horizontal for relational', 'D) There is no meaningful difference between them'],
+    correct: 1,
+    explanation: 'Relational databases traditionally scale vertically (bigger hardware on one machine). NoSQL databases are designed to scale horizontally — distributing data across many commodity servers (sharding).',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 34 (SQL vs NoSQL Comparison)'
+  },
+  {
+    id: 19, type: 'extra', tags: ['sql'],
+    text: 'Which of the following is NOT a valid reason to choose NoSQL over SQL?',
+    options: ['A) The schema changes frequently', 'B) You need strong ACID compliance for financial transactions', 'C) You need to handle millions of writes per second', 'D) Your data is unstructured JSON or logs'],
+    correct: 1,
+    explanation: 'Strong ACID compliance is a reason to choose SQL, not NoSQL. NoSQL systems typically use BASE semantics (eventual consistency), which is unsuitable for financial transaction integrity.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slides 35–38 (When to Use SQL / NoSQL)'
+  },
+  {
+    id: 20, type: 'extra', tags: ['acid', 'nosql'],
+    text: 'An e-commerce platform uses PostgreSQL for orders, MongoDB for product catalogs, Redis for shopping carts, and Neo4j for recommendations. What term describes this architecture?',
+    options: ['A) Database federation', 'B) Microservices', 'C) Polyglot persistence', 'D) Distributed SQL'],
+    correct: 2,
+    explanation: 'Polyglot persistence means using the best-fit database technology for each distinct data need within the same system. Each store is chosen for its strengths rather than forcing all data into one model.',
+    source: 'Week06_Relational_vs_NoSQL.pdf — Slide 39 (Polyglot Persistence)'
+  }
+];
+
+let currentFilter = 'all';
+const tagMap = { acid: ['acid'], cap: ['cap'], nosql: ['nosql'], sql: ['sql'] };
+
+function filter(key, btn) {
+  currentFilter = key;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function toggle(id) {
+  const box = document.getElementById('ans-' + id);
+  const btn = document.getElementById('btn-' + id);
+  const open = box.classList.toggle('open');
+  btn.textContent = open ? 'Hide answer' : 'Show answer';
+}
+
+function render() {
+  const list = document.getElementById('question-list');
+  let filtered = questions;
+  if (currentFilter === 'exam') filtered = questions.filter(q => q.type === 'exam');
+  else if (currentFilter === 'extra') filtered = questions.filter(q => q.type === 'extra');
+  else if (tagMap[currentFilter]) filtered = questions.filter(q => q.tags.some(t => tagMap[currentFilter].includes(t)));
+
+  list.innerHTML = filtered.map(q => `
+    <div class="question-card">
+      <div class="q-header">
+        <span class="q-num">Q${q.id}</span>
+        <span class="q-type ${q.type === 'exam' ? 'type-exam' : 'type-extra'}">${q.type === 'exam' ? 'Exam focus' : 'Extra practice'}</span>
+        <span class="q-text">${q.text}</span>
+      </div>
+      <ul class="options">
+        ${q.options.map((opt, i) => `<li class="${i === q.correct ? 'correct' : ''}">${opt}${i === q.correct ? ' ✓' : ''}</li>`).join('')}
+      </ul>
+      <button class="toggle-btn" id="btn-${q.id}" onclick="toggle(${q.id})">Show answer</button>
+      <div class="answer-box" id="ans-${q.id}">
+        <strong>Explanation:</strong> ${q.explanation}<br>
+        <div class="source">📄 Source: ${q.source}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+render();
+</script>
