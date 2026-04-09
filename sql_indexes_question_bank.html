@@ -1,0 +1,306 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .qb { padding: 1rem 0; max-width: 760px; }
+  .header { margin-bottom: 1.5rem; }
+  .header h2 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+  .header p { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .filter-btn { font-size: 12px; padding: 4px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: 20px; background: transparent; color: var(--color-text-secondary); cursor: pointer; transition: all 0.15s; }
+  .filter-btn.active { background: var(--color-background-info); color: var(--color-text-info); border-color: var(--color-border-info); }
+  .stats { display: flex; gap: 12px; margin-bottom: 1.5rem; }
+  .stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.6rem 1rem; text-align: center; flex: 1; }
+  .stat-num { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+  .stat-label { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+  .q-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+  .q-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 0.75rem; }
+  .q-num { font-size: 11px; font-weight: 500; color: var(--color-text-info); background: var(--color-background-info); border-radius: 4px; padding: 2px 7px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+  .q-tag { font-size: 11px; color: var(--color-text-secondary); background: var(--color-background-secondary); border-radius: 4px; padding: 2px 7px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+  .exam-badge { font-size: 11px; color: #854F0B; background: #FAEEDA; border-radius: 4px; padding: 2px 7px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+  .q-text { font-size: 14px; color: var(--color-text-primary); line-height: 1.6; flex: 1; }
+  .options { display: flex; flex-direction: column; gap: 6px; margin-bottom: 0.75rem; }
+  .opt { font-size: 13px; padding: 6px 10px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); color: var(--color-text-secondary); cursor: pointer; transition: all 0.15s; }
+  .opt:hover { background: var(--color-background-secondary); border-color: var(--color-border-secondary); }
+  .opt.correct { background: #EAF3DE; border-color: #639922; color: #3B6D11; }
+  .opt.wrong { background: #FCEBEB; border-color: #E24B4A; color: #A32D2D; }
+  .opt.revealed-correct { background: #EAF3DE; border-color: #639922; color: #3B6D11; }
+  .answer-box { display: none; margin-top: 0.5rem; padding: 0.75rem 1rem; background: var(--color-background-secondary); border-radius: var(--border-radius-md); border-left: 3px solid #639922; }
+  .answer-box.show { display: block; }
+  .answer-box .ans-label { font-size: 11px; font-weight: 500; color: #3B6D11; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .answer-box p { font-size: 13px; color: var(--color-text-primary); line-height: 1.6; }
+  .source { font-size: 11px; color: var(--color-text-tertiary); margin-top: 6px; font-style: italic; }
+  .reveal-btn { font-size: 12px; padding: 4px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: 20px; background: transparent; color: var(--color-text-secondary); cursor: pointer; }
+  .reveal-btn:hover { background: var(--color-background-secondary); }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--color-background-secondary); padding: 1px 5px; border-radius: 3px; color: var(--color-text-primary); }
+</style>
+
+<div class="qb">
+  <h2 class="sr-only">SQL Indexes & Performance — Question Bank (MTM4692 Week 4)</h2>
+  <div class="header">
+    <h2>SQL indexes & performance — question bank</h2>
+    <p>MTM4692 Week 4 · Click an option to check your answer, or use "Show answer"</p>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterQ('all',this)">All (20)</button>
+    <button class="filter-btn" onclick="filterQ('exam',this)">Exam focus</button>
+    <button class="filter-btn" onclick="filterQ('btree',this)">B-Tree</button>
+    <button class="filter-btn" onclick="filterQ('create',this)">Creating indexes</button>
+    <button class="filter-btn" onclick="filterQ('explain',this)">EXPLAIN</button>
+    <button class="filter-btn" onclick="filterQ('antipattern',this)">Anti-patterns</button>
+    <button class="filter-btn" onclick="filterQ('perf',this)">Performance</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="total-stat">20</div><div class="stat-label">Questions</div></div>
+    <div class="stat"><div class="stat-num" id="correct-stat">0</div><div class="stat-label">Correct</div></div>
+    <div class="stat"><div class="stat-num" id="attempted-stat">0</div><div class="stat-label">Attempted</div></div>
+  </div>
+
+  <div id="q-list"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    id:1, tags:['btree','exam'], isExam:true,
+    text:"What is the time complexity of a lookup using a B-Tree index on a table with 1,000,000 rows?",
+    options:["O(n) — linear","O(log n) — logarithmic","O(n²) — quadratic","O(1) — constant"],
+    correct:1,
+    answer:"B-Tree indexes provide O(log n) lookup time. For 1 million rows, this means roughly 20 comparisons instead of 1,000,000. The tree remains balanced and sorted, so each level halves the search space.",
+    source:"Week04_Indexes_Performance.pdf — B-Tree Index Structure, slide 8"
+  },
+  {
+    id:2, tags:['btree'], isExam:false,
+    text:"Which property of a B-Tree ensures that lookup time stays consistently fast regardless of which value is searched?",
+    options:["It is sorted alphabetically","All leaf nodes are at the same depth (balanced)","It stores values in insertion order","It uses hash buckets for each level"],
+    correct:1,
+    answer:"A B-Tree is balanced — all leaf nodes are at the same depth. This guarantees that every lookup traverses the same number of levels (typically 3–4 for millions of rows), giving consistent O(log n) performance.",
+    source:"Week04_Indexes_Performance.pdf — B-Tree Index Structure, slide 8"
+  },
+  {
+    id:3, tags:['exam','antipattern'], isExam:true,
+    text:"Which of the following WHERE clauses will PREVENT an index on <code>last_name</code> from being used?",
+    options:["WHERE last_name = 'Smith'","WHERE last_name LIKE 'Smi%'","WHERE last_name LIKE '%ith'","WHERE last_name > 'S'"],
+    correct:2,
+    answer:"A leading wildcard (LIKE '%ith') forces a full table scan because the index is sorted by the start of the string — it cannot skip ahead when the search pattern begins with a wildcard. Exact matches, prefix LIKE, and range comparisons all use the index.",
+    source:"Week04_Indexes_Performance.pdf — Exam Focus: Index Anti-Patterns, slide 24"
+  },
+  {
+    id:4, tags:['exam','antipattern'], isExam:true,
+    text:"A developer writes: <code>SELECT * FROM student WHERE YEAR(created_at) = 2024</code>. Why is this query slow even if <code>created_at</code> is indexed?",
+    options:["The YEAR() function has a bug","Applying a function to an indexed column prevents the index from being used","SELECT * causes a full table scan always","YEAR() requires a special temporal index"],
+    correct:1,
+    answer:"Wrapping an indexed column inside a function (like YEAR(), UPPER(), LOWER()) breaks index usage because the database cannot apply the B-Tree lookup to a transformed value. The fix is to rewrite as a range: WHERE created_at >= '2024-01-01' AND created_at < '2025-01-01'.",
+    source:"Week04_Indexes_Performance.pdf — Exam Focus: Functions on Indexed Columns, slide 25"
+  },
+  {
+    id:5, tags:['exam','create'], isExam:true,
+    text:"Which statement about composite indexes is TRUE?",
+    options:["Column order does not matter","The leftmost columns are used first by the query optimizer","Composite indexes are slower than single-column indexes","SQLite does not support composite indexes"],
+    correct:1,
+    answer:"The leftmost-prefix rule: the optimizer uses composite index columns from left to right. If you have INDEX(dept_id, gpa), filtering on dept_id alone works; filtering on gpa alone does NOT use the index. Think of a phone book sorted by last name then first name — you can't look up by first name alone.",
+    source:"Week04_Indexes_Performance.pdf — Composite Indexes, slides 16–17"
+  },
+  {
+    id:6, tags:['explain','exam'], isExam:true,
+    text:"What does the keyword SCAN in SQLite's EXPLAIN QUERY PLAN output indicate?",
+    options:["The query used a covering index","The query used a B-Tree lookup","A full table scan — every row is read","The query was cached"],
+    correct:2,
+    answer:"SCAN = full table scan: SQLite reads every row in the table. This is equivalent to ALL in MySQL's EXPLAIN output. It is the slow baseline you want to eliminate by adding an appropriate index.",
+    source:"Week04_Indexes_Performance.pdf — EXPLAIN QUERY PLAN in SQLite, slide 19"
+  },
+  {
+    id:7, tags:['explain'], isExam:false,
+    text:"After adding an index on <code>last_name</code>, what keyword appears in EXPLAIN QUERY PLAN output to confirm the index is being used?",
+    options:["SCAN","FULL SCAN","SEARCH USING INDEX","INDEX HIT"],
+    correct:2,
+    answer:"SEARCH USING INDEX (or SEARCH ... USING COVERING INDEX) confirms that SQLite is using the index rather than scanning the entire table. SCAN always means no index is being used.",
+    source:"Week04_Indexes_Performance.pdf — EXPLAIN QUERY PLAN in SQLite, slide 19"
+  },
+  {
+    id:8, tags:['explain'], isExam:false,
+    text:"What does USING COVERING INDEX mean in EXPLAIN QUERY PLAN output?",
+    options:["The table has too many indexes","All data needed by the query is in the index — no separate table lookup needed","The index covers only some rows","The index is being rebuilt"],
+    correct:1,
+    answer:"A covering index contains every column the query needs. SQLite can satisfy the query entirely from the index without going back to the main table. This is the fastest possible index scan because it eliminates the table lookup step entirely.",
+    source:"Week04_Indexes_Performance.pdf — Covering Indexes, slide 22"
+  },
+  {
+    id:9, tags:['create'], isExam:false,
+    text:"Which SQL statement creates an index only on rows where <code>is_active = 1</code>?",
+    options:["CREATE INDEX idx ON student(last_name) HAVING is_active=1","CREATE PARTIAL INDEX idx ON student(last_name)","CREATE INDEX idx ON student(last_name) WHERE is_active=1","CREATE FILTERED INDEX idx ON student(last_name) FOR is_active=1"],
+    correct:2,
+    answer:"A partial index uses a WHERE clause to restrict which rows are indexed. CREATE INDEX idx ON student(last_name) WHERE is_active=1 creates a smaller, faster index covering only active students.",
+    source:"Week04_Indexes_Performance.pdf — Types of Indexes in SQLite, slide 12 & Practice: Partial Indexes, slide 34"
+  },
+  {
+    id:10, tags:['create'], isExam:false,
+    text:"You frequently query: <code>SELECT first_name, gpa FROM student WHERE dept_id = 1</code>. Which index would make this FASTEST?",
+    options:["CREATE INDEX ON student(dept_id)","CREATE INDEX ON student(first_name, gpa)","CREATE INDEX ON student(dept_id, first_name, gpa)","CREATE INDEX ON student(gpa, dept_id)"],
+    correct:2,
+    answer:"A covering index on (dept_id, first_name, gpa) means the query can be answered entirely from the index — no table lookup needed. The WHERE column (dept_id) comes first (leftmost-prefix rule), followed by the SELECT columns.",
+    source:"Week04_Indexes_Performance.pdf — Covering Indexes, slide 22"
+  },
+  {
+    id:11, tags:['create'], isExam:false,
+    text:"In SQLite, which column type is AUTOMATICALLY indexed without any CREATE INDEX statement?",
+    options:["Any column declared UNIQUE","Any TEXT column","INTEGER PRIMARY KEY","Any column used in a WHERE clause"],
+    correct:2,
+    answer:"In SQLite, INTEGER PRIMARY KEY is the rowid — it is always indexed automatically. You never need to create an index for it manually.",
+    source:"Week04_Indexes_Performance.pdf — Types of Indexes in SQLite, slide 12"
+  },
+  {
+    id:12, tags:['antipattern'], isExam:false,
+    text:"You have an index on <code>email</code>. Which query will STILL use the index?",
+    options:["WHERE UPPER(email) = 'ALICE@YTU.EDU.TR'","WHERE email = 'alice@ytu.edu.tr'","WHERE LOWER(email) = 'alice@ytu.edu.tr'","WHERE SUBSTR(email,1,5) = 'alice'"],
+    correct:1,
+    answer:"Only the plain equality comparison uses the index directly. Wrapping the column in UPPER(), LOWER(), or SUBSTR() breaks index usage — the database can't apply B-Tree navigation to a transformed value. You can fix this with an expression index: CREATE INDEX ON student(LOWER(email)).",
+    source:"Week04_Indexes_Performance.pdf — Index Anti-Patterns, slide 23"
+  },
+  {
+    id:13, tags:['perf'], isExam:false,
+    text:"What is the trade-off introduced by adding indexes to a table?",
+    options:["Indexes only affect SELECT performance, nothing else","Read speed increases, but write speed decreases and storage increases","Indexes make writes faster and reads slower","Indexes have no storage cost"],
+    correct:1,
+    answer:"Every index is a separate data structure that must be updated on every INSERT, UPDATE, and DELETE. This slows down writes. The benefit is faster reads (SELECT, WHERE, JOIN, ORDER BY). The rule: read speed ↑ vs write speed ↓ + storage ↑.",
+    source:"Week04_Indexes_Performance.pdf — What Is an Index?, slide 7"
+  },
+  {
+    id:14, tags:['perf'], isExam:false,
+    text:"What is the performance complexity for a JOIN ON a.id = b.id WITHOUT any index on b.id?",
+    options:["O(log n)","O(n + m)","O(n × m) — nested loop","O(n log n)"],
+    correct:2,
+    answer:"Without an index, the database must perform a nested-loop join: for each row in table A it scans every row in table B, giving O(n × m) complexity. With an index on b.id, this becomes O(n log m) — dramatically faster for large tables.",
+    source:"Week04_Indexes_Performance.pdf — Index Performance Summary, slide 27"
+  },
+  {
+    id:15, tags:['perf'], isExam:false,
+    text:"Which scenario is the BEST candidate for skipping an index?",
+    options:["A column used in every WHERE clause","A foreign key column used in JOINs","A boolean column with only TRUE/FALSE values","An email column with unique values per row"],
+    correct:2,
+    answer:"Low-cardinality columns (few unique values, like booleans or gender) make poor index candidates. If a column has only 2–3 distinct values, the index often covers more than half the table — the database may decide a full scan is faster. High-cardinality columns (email, name) benefit most from indexes.",
+    source:"Week04_Indexes_Performance.pdf — When to Index (and When Not To), slide 26"
+  },
+  {
+    id:16, tags:['create','antipattern'], isExam:false,
+    text:"Given <code>CREATE INDEX idx ON student(dept_id, gpa)</code>, which query will NOT use this index?",
+    options:["WHERE dept_id = 1","WHERE dept_id = 1 AND gpa >= 3.5","WHERE gpa >= 3.5","WHERE dept_id = 1 ORDER BY gpa DESC"],
+    correct:2,
+    answer:"Skipping the leftmost column breaks the index. WHERE gpa >= 3.5 jumps to the second column without using the first (dept_id), so the optimizer falls back to a full table scan. All other options start with dept_id and therefore use the index.",
+    source:"Week04_Indexes_Performance.pdf — Composite Indexes — Column Order Matters!, slide 16"
+  },
+  {
+    id:17, tags:['explain'], isExam:false,
+    text:"What SQLite command collects table and index statistics to help the query optimizer make better decisions?",
+    options:["VACUUM","REINDEX","ANALYZE","PRAGMA optimize"],
+    correct:2,
+    answer:"ANALYZE collects statistics about table data and index distribution and stores them in sqlite_stat1. The optimizer uses these stats to decide which index to use, whether an index scan is faster than a table scan, and the best join order. Run it after creating indexes or major bulk data changes.",
+    source:"Week04_Indexes_Performance.pdf — Practice: ANALYZE Command, slide 40"
+  },
+  {
+    id:18, tags:['btree'], isExam:false,
+    text:"For a B-Tree index on a table of 1,000,000 rows, approximately how many levels deep is the tree?",
+    options:["~3–4 levels","~100 levels","~1,000 levels","~20,000 levels"],
+    correct:0,
+    answer:"Due to the high branching factor of B-Trees (each node can hold many keys), a tree covering millions of rows stays only 3–4 levels deep. This is why B-Tree lookups are so fast — even 1 million rows requires only ~20 comparisons.",
+    source:"Week04_Indexes_Performance.pdf — B-Tree Index Structure, slide 8"
+  },
+  {
+    id:19, tags:['perf','antipattern'], isExam:false,
+    text:"A table receives thousands of INSERT and UPDATE operations per second. What is the recommended indexing strategy?",
+    options:["Create as many indexes as possible to speed up any future reads","Use fewer indexes — only index what is truly necessary for critical queries","Never index write-heavy tables","Use only covering indexes on write-heavy tables"],
+    correct:1,
+    answer:"Every index must be updated on every write operation. For write-heavy tables, too many indexes can seriously degrade throughput. The recommendation is to index only the columns that are truly needed for the most critical read queries.",
+    source:"Week04_Indexes_Performance.pdf — When to Index (and When Not To), slide 26 & Index Decision Checklist, slide 43"
+  },
+  {
+    id:20, tags:['create'], isExam:false,
+    text:"You want to allow case-insensitive email lookups: <code>WHERE LOWER(email) = ?</code>. What is the correct approach?",
+    options:["CREATE INDEX idx ON student(email) — it will handle case automatically","You cannot index case-insensitive searches in SQLite","CREATE INDEX idx ON student(LOWER(email)) — an expression index","Disable the index and use a full scan for case-insensitive queries"],
+    correct:2,
+    answer:"An expression index stores the computed result of a function. CREATE INDEX idx ON student(LOWER(email)) indexes the lowercased email value. The query WHERE LOWER(email) = 'alice@ytu.edu.tr' will then match the expression and use the index rather than scanning the table.",
+    source:"Week04_Indexes_Performance.pdf — Expression Indexes / Practice: Expression Indexes, slides 12 & 35"
+  }
+];
+
+let correct=0, attempted=0, activeFilter='all';
+
+function filterQ(tag, btn){
+  activeFilter=tag;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+function renderAll(){
+  const list = document.getElementById('q-list');
+  list.innerHTML='';
+  let shown=0;
+  questions.forEach(q=>{
+    const show = activeFilter==='all'
+      || (activeFilter==='exam' && q.isExam)
+      || q.tags.includes(activeFilter);
+    if(!show) return;
+    shown++;
+    list.innerHTML += buildCard(q);
+  });
+}
+
+function buildCard(q){
+  const badge = q.isExam ? `<span class="exam-badge">Exam focus</span>` : '';
+  const tagLabel = q.tags.filter(t=>t!=='exam')[0]||'';
+  const tagNames={'btree':'B-Tree','create':'Creating indexes','explain':'EXPLAIN','antipattern':'Anti-patterns','perf':'Performance'};
+  const opts = q.options.map((o,i)=>
+    `<div class="opt" id="opt-${q.id}-${i}" onclick="selectOpt(${q.id},${i})">${String.fromCharCode(65+i)}) ${o}</div>`
+  ).join('');
+  return `<div class="q-card" id="card-${q.id}" data-tags="${q.tags.join(' ')}">
+    <div class="q-header">
+      <span class="q-num">Q${q.id}</span>
+      <span class="q-tag">${tagNames[tagLabel]||tagLabel}</span>
+      ${badge}
+      <span class="q-text">${q.text}</span>
+    </div>
+    <div class="options">${opts}</div>
+    <button class="reveal-btn" onclick="revealAnswer(${q.id})">Show answer</button>
+    <div class="answer-box" id="ans-${q.id}">
+      <div class="ans-label">Answer</div>
+      <p>${q.answer}</p>
+      <p class="source">Source: ${q.source}</p>
+    </div>
+  </div>`;
+}
+
+function selectOpt(qid, idx){
+  const q = questions.find(x=>x.id===qid);
+  if(document.getElementById(`opt-${qid}-0`).classList.contains('correct') ||
+     document.getElementById(`opt-${qid}-0`).classList.contains('wrong') ||
+     document.getElementById(`opt-${qid}-0`).classList.contains('revealed-correct')) return;
+  
+  attempted++;
+  document.getElementById('attempted-stat').textContent=attempted;
+  
+  for(let i=0;i<q.options.length;i++){
+    const el = document.getElementById(`opt-${qid}-${i}`);
+    if(i===q.correct) el.classList.add('correct');
+    else if(i===idx && idx!==q.correct) el.classList.add('wrong');
+  }
+  if(idx===q.correct){
+    correct++;
+    document.getElementById('correct-stat').textContent=correct;
+  }
+  document.getElementById(`ans-${qid}`).classList.add('show');
+}
+
+function revealAnswer(qid){
+  const q = questions.find(x=>x.id===qid);
+  for(let i=0;i<q.options.length;i++){
+    const el = document.getElementById(`opt-${qid}-${i}`);
+    if(i===q.correct && !el.classList.contains('correct')) el.classList.add('revealed-correct');
+  }
+  document.getElementById(`ans-${qid}`).classList.add('show');
+}
+
+renderAll();
+</script>
