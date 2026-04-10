@@ -1,0 +1,195 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.qb { padding: 1.5rem 0; }
+.header { margin-bottom: 1.5rem; }
+.header h2 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+.header p { font-size: 14px; color: var(--color-text-secondary); margin-top: 4px; }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.tab { font-size: 13px; padding: 6px 14px; border-radius: 20px; border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); cursor: pointer; }
+.tab.active { background: var(--color-background-info); color: var(--color-text-info); border-color: var(--color-border-info); }
+.progress-bar { height: 4px; background: var(--color-background-secondary); border-radius: 2px; margin-bottom: 1.5rem; }
+.progress-fill { height: 100%; background: var(--color-text-info); border-radius: 2px; transition: width 0.3s; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+.stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px; text-align: center; }
+.stat .num { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.stat .lbl { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+.q-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+.badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+.badge-topic { background: var(--color-background-info); color: var(--color-text-info); }
+.badge-diff-easy { background: var(--color-background-success); color: var(--color-text-success); }
+.badge-diff-medium { background: var(--color-background-warning); color: var(--color-text-warning); }
+.badge-diff-hard { background: var(--color-background-danger); color: var(--color-text-danger); }
+.q-num { font-size: 12px; color: var(--color-text-tertiary); margin-left: auto; }
+.q-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; margin-bottom: 1rem; }
+.q-text code { font-family: var(--font-mono); font-size: 13px; background: var(--color-background-secondary); padding: 1px 6px; border-radius: 4px; }
+.options { display: flex; flex-direction: column; gap: 8px; }
+.opt { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); cursor: pointer; font-size: 14px; color: var(--color-text-primary); background: transparent; text-align: left; transition: border-color 0.15s, background 0.15s; }
+.opt:hover:not(.disabled) { border-color: var(--color-border-secondary); background: var(--color-background-secondary); }
+.opt.correct { border-color: var(--color-border-success); background: var(--color-background-success); color: var(--color-text-success); }
+.opt.wrong { border-color: var(--color-border-danger); background: var(--color-background-danger); color: var(--color-text-danger); }
+.opt.disabled { cursor: default; }
+.opt-letter { font-weight: 500; min-width: 18px; }
+.explanation { margin-top: 12px; font-size: 13px; padding: 10px 14px; border-left: 3px solid var(--color-border-info); background: var(--color-background-info); color: var(--color-text-primary); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; line-height: 1.6; display: none; }
+.explanation code { font-family: var(--font-mono); font-size: 12px; background: var(--color-background-secondary); padding: 1px 5px; border-radius: 3px; }
+.no-q { text-align: center; color: var(--color-text-secondary); padding: 2rem; font-size: 14px; }
+</style>
+
+<div class="qb">
+  <div class="header">
+    <h2>MTM4692 — CTEs & SQL midterm question bank</h2>
+    <p>Click an answer to check it. Filter by topic or difficulty.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="num" id="s-total">0</div><div class="lbl">Questions</div></div>
+    <div class="stat"><div class="num" id="s-correct" style="color:var(--color-text-success)">0</div><div class="lbl">Correct</div></div>
+    <div class="stat"><div class="num" id="s-pct">—</div><div class="lbl">Score</div></div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+
+  <div class="tabs" id="topic-tabs"></div>
+  <div class="tabs" id="diff-tabs"></div>
+
+  <div id="qlist"></div>
+</div>
+
+<script>
+const ALL = [
+  { topic: "CTE basics", diff: "easy", q: "What does CTE stand for in SQL?", opts: ["Common Table Expression","Compiled Table Entry","Combined Table Extension","Conditional Table Evaluation"], ans: 0, exp: "CTE = Common Table Expression. Defined with the <code>WITH</code> keyword, it creates a named temporary result set for the duration of a single query." },
+  { topic: "CTE basics", diff: "easy", q: "Which keyword introduces a CTE?", opts: ["FROM","AS","WITH","TEMP"], ans: 2, exp: "<code>WITH cte_name AS ( SELECT ... )</code> is the standard syntax across PostgreSQL, SQLite, SQL Server, and MySQL 8+." },
+  { topic: "CTE basics", diff: "easy", q: "What is the scope of a CTE?", opts: ["The entire database","The current session","Only the single query it is defined in","All queries in the same transaction"], ans: 2, exp: "A CTE exists only for the query immediately following the <code>WITH</code> block. It is not stored and cannot be referenced by other queries." },
+  { topic: "CTE basics", diff: "medium", q: "What is the main advantage of a CTE over a nested subquery?", opts: ["CTEs are always faster to execute","CTEs improve readability and can reference themselves recursively","CTEs store data permanently in the database","CTEs can fully replace tables"], ans: 1, exp: "CTEs improve readability by giving a subquery a name and placing it at the top. They also enable recursion, which plain subqueries cannot do." },
+  { topic: "CTE basics", diff: "medium", q: "How many times can a CTE be referenced within its associated query?", opts: ["Only once","Multiple times","Exactly twice","It depends on the database"], ans: 1, exp: "Unlike a subquery, a CTE can be referenced multiple times in the same query without rewriting it, which avoids duplicate logic." },
+  { topic: "CTE basics", diff: "medium", q: "In a <code>WITH</code> block containing multiple CTEs, can a later CTE reference an earlier one?", opts: ["No — each CTE is independent","Yes — later CTEs can reference previously defined ones in the same WITH block","Only if they are joined explicitly","Only in recursive CTEs"], ans: 1, exp: "CTEs in the same <code>WITH</code> clause are evaluated in order. Each CTE can reference any CTE defined before it in the same block." },
+  { topic: "CTE basics", diff: "hard", q: "Which statement correctly distinguishes a CTE from a VIEW?", opts: ["A view exists only for one query; a CTE is stored in the database","A CTE exists only for one query; a view is stored and reusable across queries","Both are stored permanently","Neither can use JOINs"], ans: 1, exp: "A view is a stored database object reusable across many queries. A CTE is temporary — it vanishes after the query completes." },
+  { topic: "CTE basics", diff: "hard", q: "Given two CTEs <code>A</code> and <code>B</code>, where <code>B</code> references <code>A</code>, what is the correct WITH clause order?", opts: ["B, then A","A, then B","Order does not matter","They must be in separate WITH clauses"], ans: 1, exp: "CTEs must be declared before they are used. <code>A</code> must appear first so that <code>B</code> can reference it." },
+
+  { topic: "Recursive CTEs", diff: "easy", q: "Which keyword is added to <code>WITH</code> to allow a recursive CTE?", opts: ["LOOP","RECURSIVE","SELF","ITERATE"], ans: 1, exp: "The syntax is <code>WITH RECURSIVE cte_name AS ( ... )</code>. Without <code>RECURSIVE</code>, self-referencing is not allowed." },
+  { topic: "Recursive CTEs", diff: "easy", q: "What are the two required parts of a recursive CTE?", opts: ["SELECT and WHERE clauses","Anchor member (base case) and recursive member","PARTITION BY and ORDER BY","INSERT and SELECT statements"], ans: 1, exp: "Every recursive CTE needs an anchor member that produces the starting rows, and a recursive member that references the CTE itself to build subsequent rows." },
+  { topic: "Recursive CTEs", diff: "easy", q: "What operator connects the anchor member and the recursive member in a recursive CTE?", opts: ["JOIN","INTERSECT","UNION ALL","CROSS JOIN"], ans: 2, exp: "<code>UNION ALL</code> combines the anchor result set with each iteration of the recursive result. <code>UNION</code> (deduplicating) is less common and can mask infinite-loop bugs." },
+  { topic: "Recursive CTEs", diff: "medium", q: "In the number-series CTE below, what value causes the recursion to stop?\n<code>SELECT 1 AS n UNION ALL SELECT n+1 FROM nums WHERE n < 10</code>", opts: ["n = 0","n = 9","n = 10","n = 11"], ans: 2, exp: "When <code>n = 10</code>, the condition <code>n < 10</code> is FALSE, so no new row is generated and recursion terminates. The final result set contains n = 1 … 10." },
+  { topic: "Recursive CTEs", diff: "medium", q: "What does the <code>level</code> column track in an org-chart recursive CTE?", opts: ["The employee's salary band","The depth of the node in the hierarchy","The number of direct reports","The employee ID"], ans: 1, exp: "Each recursive step increments <code>level</code> by 1. The anchor (root) starts at 0. This lets you indent output or filter by depth." },
+  { topic: "Recursive CTEs", diff: "medium", q: "What real-world data structure is a recursive CTE most naturally suited to query?", opts: ["A flat CSV file","A pivot table","A tree or hierarchy (e.g. org chart, category tree)","A time-series log"], ans: 2, exp: "Recursive CTEs follow parent→child links row by row, making them ideal for trees: org charts, folder structures, bill-of-materials, category hierarchies." },
+  { topic: "Recursive CTEs", diff: "hard", q: "A table has columns <code>emp_id</code> and <code>manager_id</code>. The CEO row has <code>manager_id IS NULL</code>. Which part of the recursive CTE selects the CEO?", opts: ["The recursive member","The anchor member","The UNION ALL clause","The final SELECT"], ans: 1, exp: "The anchor member seeds the recursion. <code>WHERE manager_id IS NULL</code> selects the root node (CEO). Each recursive step then finds employees whose <code>manager_id</code> matches a row already in the CTE." },
+  { topic: "Recursive CTEs", diff: "hard", q: "Why is <code>UNION ALL</code> preferred over <code>UNION</code> in recursive CTEs?", opts: ["UNION ALL is the only option allowed","UNION ALL preserves duplicates needed by the recursion and avoids costly deduplication","UNION is not valid SQL","UNION ALL is faster for all queries"], ans: 1, exp: "<code>UNION</code> deduplicates rows on every iteration, which is expensive and can accidentally terminate recursion when intermediate duplicates are expected. <code>UNION ALL</code> is correct and efficient for most recursive patterns." },
+
+  { topic: "Comparisons", diff: "easy", q: "Which feature does a CTE support that a regular subquery does NOT?", opts: ["Filtering with WHERE","Recursive self-reference","Joining to other tables","Returning multiple columns"], ans: 1, exp: "Subqueries cannot reference themselves. The <code>WITH RECURSIVE</code> syntax is unique to CTEs and enables hierarchical traversal." },
+  { topic: "Comparisons", diff: "medium", q: "A complex subquery is used 4 times in one query. What is the best refactor?", opts: ["Copy-paste the subquery 4 times","Create a permanent VIEW","Define it once as a CTE and reference the CTE 4 times","Use a temporary table"], ans: 2, exp: "CTEs are ideal for reusing logic within a single query. Defining it once reduces duplication, improves readability, and lets the optimizer potentially reuse the result." },
+  { topic: "Comparisons", diff: "medium", q: "Which object is stored permanently in the database and reusable across many queries?", opts: ["CTE","Subquery","VIEW","Temporary table"], ans: 2, exp: "A VIEW is a stored database object. CTEs and subqueries exist only for the duration of a single query. Temporary tables persist for the session or transaction." },
+  { topic: "Comparisons", diff: "hard", q: "What is the performance relationship between a CTE and an equivalent subquery?", opts: ["CTEs are always faster","Subqueries are always faster","They are generally equivalent — the optimizer may treat them the same","CTEs always materialise to disk"], ans: 2, exp: "In most databases (SQLite, PostgreSQL, MySQL) the query planner treats a non-recursive CTE similarly to an inline subquery. Some databases optionally materialise CTEs; check your database's documentation." },
+
+  { topic: "SQL patterns", diff: "easy", q: "Which clause filters rows BEFORE grouping?", opts: ["HAVING","WHERE","ORDER BY","LIMIT"], ans: 1, exp: "<code>WHERE</code> filters individual rows before <code>GROUP BY</code> processes them. <code>HAVING</code> filters after aggregation." },
+  { topic: "SQL patterns", diff: "easy", q: "Which clause filters groups AFTER a <code>GROUP BY</code>?", opts: ["WHERE","HAVING","FILTER","QUALIFY"], ans: 1, exp: "<code>HAVING</code> operates on grouped results and can use aggregate functions like <code>COUNT(*) > 5</code>. <code>WHERE</code> cannot reference aggregates." },
+  { topic: "SQL patterns", diff: "medium", q: "What type of subquery references a column from its outer query?", opts: ["Scalar subquery","Row subquery","Correlated subquery","Derived table"], ans: 2, exp: "A correlated subquery re-executes for each row of the outer query, referencing the outer row's columns. This can be expensive on large tables." },
+  { topic: "SQL patterns", diff: "medium", q: "Which JOIN returns ALL rows from the left table, with NULLs for non-matching right rows?", opts: ["INNER JOIN","RIGHT JOIN","CROSS JOIN","LEFT JOIN"], ans: 3, exp: "<code>LEFT JOIN</code> (or <code>LEFT OUTER JOIN</code>) preserves every row from the left table. Where there is no match on the right, the right columns are NULL." },
+  { topic: "SQL patterns", diff: "hard", q: "You want all rows from both tables, including non-matches on either side. Which JOIN type do you use?", opts: ["INNER JOIN","LEFT JOIN","FULL OUTER JOIN","CROSS JOIN"], ans: 2, exp: "<code>FULL OUTER JOIN</code> returns all rows from both tables, filling NULLs wherever there is no match on the other side. SQLite does not support it natively." },
+
+  { topic: "Indexes & performance", diff: "easy", q: "What does <code>EXPLAIN</code> show you in SQLite/PostgreSQL?", opts: ["The actual result rows","The query execution plan (how the engine will run the query)","The index definitions","The table schema"], ans: 1, exp: "<code>EXPLAIN</code> (or <code>EXPLAIN QUERY PLAN</code> in SQLite) shows the execution strategy: whether an index is used, whether a full table scan occurs, and the estimated cost." },
+  { topic: "Indexes & performance", diff: "easy", q: "Which index structure best supports range queries like <code>WHERE age BETWEEN 20 AND 30</code>?", opts: ["Hash index","B-Tree index","Bitmap index","Full-text index"], ans: 1, exp: "B-Tree indexes maintain sorted order, making range scans efficient. Hash indexes only support exact equality lookups and cannot handle ranges." },
+  { topic: "Indexes & performance", diff: "medium", q: "Adding an index speeds up reads. What is the main trade-off?", opts: ["Indexes slow down all SELECT queries","Indexes increase write (INSERT/UPDATE/DELETE) overhead","Indexes consume no extra space","Indexes prevent JOINs"], ans: 1, exp: "Every write must also update all relevant indexes, adding overhead. Index columns consume additional disk space. The trade-off is faster reads vs. slower writes." },
+  { topic: "Indexes & performance", diff: "medium", q: "Which columns are the best candidates for indexing?", opts: ["Columns in SELECT that are never filtered","Columns used in WHERE, JOIN ON, ORDER BY, and GROUP BY","All columns in every table","Only primary key columns"], ans: 1, exp: "Indexes help the most on columns the engine must search or sort. Indexing columns only used in <code>SELECT</code> output provides no filtering benefit." },
+
+  { topic: "ACID / NoSQL", diff: "easy", q: "What does ACID stand for?", opts: ["Atomicity, Consistency, Isolation, Durability","Access, Control, Index, Data","Aggregate, Commit, Isolate, Deploy","Availability, Consistency, Integrity, Distribution"], ans: 0, exp: "ACID properties guarantee reliable transaction processing in relational databases: all-or-nothing (Atomicity), valid state (Consistency), non-interfering transactions (Isolation), and persistent commits (Durability)." },
+  { topic: "ACID / NoSQL", diff: "easy", q: "In the CAP theorem, what does 'P' stand for?", opts: ["Performance","Persistence","Partition tolerance","Predictability"], ans: 2, exp: "CAP = Consistency, Availability, Partition tolerance. Because network partitions are inevitable in distributed systems, real systems must choose between C and A when a partition occurs." },
+  { topic: "ACID / NoSQL", diff: "medium", q: "A distributed database accepts writes even if some nodes are unreachable and syncs later. Which property does it prioritise?", opts: ["Consistency over Availability","Availability over Consistency","Partition tolerance over both C and A","Durability over Availability"], ans: 1, exp: "Choosing Availability means the system stays responsive even during a partition, at the cost of temporarily inconsistent reads. This is typical of BASE systems like DynamoDB or Cassandra." },
+  { topic: "ACID / NoSQL", diff: "hard", q: "Which NoSQL database type is best suited for traversing social-network connections?", opts: ["Key-value store (Redis)","Document store (MongoDB)","Graph database (Neo4j)","Wide-column store (Cassandra)"], ans: 2, exp: "Graph databases store data as nodes and edges, making multi-hop relationship queries (friends-of-friends, shortest path) highly efficient — far better than joins in relational tables." },
+];
+
+let answered = {};
+let activeTopic = "All";
+let activeDiff = "All";
+
+function topics() { return ["All", ...new Set(ALL.map(q => q.topic))]; }
+function diffs() { return ["All", "easy", "medium", "hard"]; }
+
+function filtered() {
+  return ALL.filter(q =>
+    (activeTopic === "All" || q.topic === activeTopic) &&
+    (activeDiff === "All" || q.diff === activeDiff)
+  );
+}
+
+function updateStats() {
+  const vis = filtered();
+  const total = vis.length;
+  const correct = vis.filter((_, i) => answered[globalIndex(i)] === true).length;
+  const attempted = vis.filter((_, i) => answered[globalIndex(i)] !== undefined).length;
+  document.getElementById("s-total").textContent = total;
+  document.getElementById("s-correct").textContent = correct;
+  document.getElementById("s-pct").textContent = attempted ? Math.round(correct / attempted * 100) + "%" : "—";
+  document.getElementById("prog").style.width = (attempted / Math.max(total, 1) * 100) + "%";
+}
+
+function globalIndex(localIdx) {
+  return ALL.indexOf(filtered()[localIdx]);
+}
+
+function renderTabs() {
+  const tt = document.getElementById("topic-tabs");
+  const dt = document.getElementById("diff-tabs");
+  tt.innerHTML = topics().map(t => `<button class="tab${t===activeTopic?" active":""}" onclick="setTopic('${t}')">${t}</button>`).join("");
+  dt.innerHTML = diffs().map(d => `<button class="tab${d===activeDiff?" active":""}" onclick="setDiff('${d}')">${capitalize(d)}</button>`).join("");
+}
+
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function diffClass(d) { return "badge badge-diff-" + d; }
+
+function renderQuestions() {
+  const qs = filtered();
+  const el = document.getElementById("qlist");
+  if (!qs.length) { el.innerHTML = '<div class="no-q">No questions match this filter.</div>'; return; }
+  el.innerHTML = qs.map((q, li) => {
+    const gi = globalIndex(li);
+    const state = answered[gi];
+    return `<div class="card" id="card-${gi}">
+      <div class="q-meta">
+        <span class="badge badge-topic">${q.topic}</span>
+        <span class="${diffClass(q.diff)}">${capitalize(q.diff)}</span>
+        <span class="q-num">Q${li + 1} / ${qs.length}</span>
+      </div>
+      <div class="q-text">${q.q.replace(/\n/g,'<br>')}</div>
+      <div class="options">
+        ${q.opts.map((o, oi) => {
+          let cls = "opt";
+          if (state !== undefined) {
+            cls += " disabled";
+            if (oi === q.ans) cls += " correct";
+            else if (oi === state && state !== q.ans) cls += " wrong";
+          }
+          return `<button class="${cls}" onclick="answer(${gi},${oi})">
+            <span class="opt-letter">${String.fromCharCode(65+oi)}</span>
+            <span>${o}</span>
+          </button>`;
+        }).join("")}
+      </div>
+      <div class="explanation" id="exp-${gi}" style="${state!==undefined?'display:block':'display:none'}">${q.exp}</div>
+    </div>`;
+  }).join("");
+  updateStats();
+}
+
+function answer(gi, chosen) {
+  if (answered[gi] !== undefined) return;
+  const q = ALL[gi];
+  answered[gi] = chosen;
+  const card = document.getElementById("card-" + gi);
+  card.querySelectorAll(".opt").forEach((btn, i) => {
+    btn.classList.add("disabled");
+    if (i === q.ans) btn.classList.add("correct");
+    else if (i === chosen && chosen !== q.ans) btn.classList.add("wrong");
+  });
+  document.getElementById("exp-" + gi).style.display = "block";
+  updateStats();
+}
+
+function setTopic(t) { activeTopic = t; renderTabs(); renderQuestions(); }
+function setDiff(d) { activeDiff = d; renderTabs(); renderQuestions(); }
+
+renderTabs();
+renderQuestions();
+</script>
